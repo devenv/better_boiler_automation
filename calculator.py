@@ -13,6 +13,7 @@ BOILER_CAPACITY_IN_LITERS = 100
 BOILER_POWER_IN_AMPERES = 10
 VOLTAGE = 220
 BOILER_MIN_HEATING_TIME = 5 / 60
+BOILER_NURFER = 0.8
 
 DESIRED_MAX_INTENCITY_TEMPERATURE = 55
 DESIRED_MIN_INTENCITY_TEMPERATURE = 37
@@ -28,7 +29,7 @@ class Calculator:
         if delta_energy <= 0:
             return 0
         hours_needed = self._needed_boiler_time(delta_energy)
-        logger.info(f"Hours needed to heat to intencity {intencity}: {hours_needed}")
+        logger.info(f"Hours needed to heat to intencity {intencity}: {hours_needed:.2f}h")
         return hours_needed
 
     def _sun_output(self, weather):
@@ -58,4 +59,4 @@ class Calculator:
         hours_needed = needed_energy / boiler_output
         if hours_needed < BOILER_MIN_HEATING_TIME:
             return 0
-        return hours_needed
+        return hours_needed * BOILER_NURFER

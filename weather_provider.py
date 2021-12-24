@@ -6,6 +6,8 @@ from dataclasses import dataclass
 import pyowm
 from pyowm.utils import formatting
 
+from logger import get_logger
+
 
 def load_api_key():
     with open(os.path.join(sys.path[0], 'weather_api_key.txt')) as f:
@@ -33,8 +35,11 @@ class WeatherProvider:
         owm = pyowm.OWM(self.api_key)
         mgr = owm.weather_manager()
         city = owm.city_id_registry().locations_for(self.location)[0]
+        current_weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
+        get_logger().info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
+        results.append(current_weather)
 
-        for i in range(self.HOURS_TO_LOOK_BACK):
+        for i in range(1, self.HOURS_TO_LOOK_BACK):
             results.append(self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current))
 
         return results
