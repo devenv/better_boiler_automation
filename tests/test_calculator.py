@@ -16,6 +16,7 @@ from weather_provider import WeatherData
 @patch('calculator.DESIRED_MAX_INTENCITY_TEMPERATURE', 55)
 @patch('calculator.DESIRED_MIN_INTENCITY_TEMPERATURE', 40)
 @patch('calculator.BOILER_MIN_HEATING_TIME', 0.25)
+@patch('calculator.BOILER_NURFER', 1.0)
 class TestScheduler(TestCase):
 
     def test_needed_hours_to_heat_no_need(self):
@@ -126,3 +127,15 @@ class TestScheduler(TestCase):
         calculator = Calculator()
         hours = calculator._needed_boiler_time(0.1)
         self.assertEquals(hours, 0)
+
+    def test_needed_boiler_time_min_hours(self):
+        calculator = Calculator()
+        hours = calculator._needed_boiler_time(0.1)
+        self.assertEquals(hours, 0)
+
+
+    def test_needed_boiler_time_with_nurfer(self):
+        with patch('calculator.BOILER_NURFER', 0.5):
+            calculator = Calculator()
+            hours = calculator._needed_boiler_time(5)
+            self.assertAlmostEquals(hours, 1.135, places=2)
