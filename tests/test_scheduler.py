@@ -3,12 +3,12 @@ from unittest.mock import MagicMock
 
 from datetime import datetime
 from freezegun import freeze_time
-from scheduler_config import SchedulerConfig, Time
+from scheduler.scheduler_config import SchedulerConfig, Time
 
-from calculator import Calculator
-from scheduler import Scheduler
-from scheduler_config import Time
-from weather_provider import WeatherData
+from calculator.calculator import Calculator
+from scheduler.scheduler import Scheduler
+from scheduler.scheduler_config import Time
+from weather.weather_provider import WeatherData
 
 
 class TestScheduler(TestCase):

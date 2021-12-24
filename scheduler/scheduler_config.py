@@ -4,7 +4,7 @@ import os
 import sys
 
 def load_config():
-    with open(os.path.join(sys.path[0], "scheduler_config.json"), "r") as f:
+    with open(os.path.join(sys.path[0], "scheduler/scheduler_config.json"), "r") as f:
         return json.load(f)
 
 

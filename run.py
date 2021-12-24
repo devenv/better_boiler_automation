@@ -1,9 +1,9 @@
 from time import sleep
-from boiler_controller import BoilerController
-from calculator import Calculator
-from scheduler import Scheduler
-from scheduler_config import SchedulerConfig
-from weather_provider import WeatherProvider
+from boiler.boiler_controller import BoilerController
+from calculator.calculator import Calculator
+from scheduler.scheduler import Scheduler
+from scheduler.scheduler_config import SchedulerConfig
+from weather.weather_provider import WeatherProvider
 
 
 def main():

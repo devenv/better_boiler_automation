@@ -10,11 +10,11 @@ from logger import get_logger
 
 
 def load_api_key():
-    with open(os.path.join(sys.path[0], 'weather_api_key.txt')) as f:
+    with open(os.path.join(sys.path[0], 'weather/weather_api_key.txt')) as f:
         return f.readline().strip()
 
 def load_location():
-    with open(os.path.join(sys.path[0], 'my_location.txt')) as f:
+    with open(os.path.join(sys.path[0], 'weather/my_location.txt')) as f:
         return f.readline().strip()
 
 @dataclass
