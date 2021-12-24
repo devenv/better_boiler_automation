@@ -18,12 +18,14 @@ class BoilerController:
 
     def turn_on(self):
         if self.test_mode:
+            self.test_state = True
             print('Turned boiler ON')
             return True
         self.assistant.boiler_on()
 
     def turn_off(self):
         if self.test_mode:
+            self.test_state = False
             print('Turned boiler OFF')
             return True
         self.assistant.boiler_off()
