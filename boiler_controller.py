@@ -24,6 +24,7 @@ class BoilerController:
             logger.info('Turned boiler ON')
             return True
         self.assistant.boiler_on()
+        self.assistant.broadcast('boiler is on')
 
     def turn_off(self):
         if self.test_mode:
@@ -31,3 +32,4 @@ class BoilerController:
             logger.info('Turned boiler OFF')
             return True
         self.assistant.boiler_off()
+        self.assistant.broadcast('boiler is off')

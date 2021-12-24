@@ -6,10 +6,10 @@ from logger import get_logger
 
 logger = get_logger()
 
-
 def load_config():
     with open(os.path.join(sys.path[0], "calculator_config.json"), "r") as f:
         return json.load(f)
+
 
 class Calculator:
 

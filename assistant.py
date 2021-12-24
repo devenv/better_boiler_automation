@@ -60,6 +60,9 @@ class Assistant(object):
     def boiler_off(self):
         self.ask('lights off')
 
+    def broadcast(self, message):
+        self.ask(f'broadcast "{message}"')
+
     def ask(self, text_query):
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(
