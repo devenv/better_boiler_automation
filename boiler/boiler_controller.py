@@ -1,6 +1,6 @@
 from logger import get_logger
 
-from assistant import Assistant
+from assistant.assistant import Assistant
 
 logger = get_logger()
 

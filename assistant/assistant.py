@@ -9,7 +9,7 @@ import google.oauth2.credentials
 
 from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_assistant_pb2_grpc
 
-import assistant_helpers
+import assistant.assistant_helpers
 
 
 #with Assistant(config['device_model_id'], config['device_id']) as assistant:
@@ -19,7 +19,7 @@ ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
 def load_config():
-    with open(os.path.join(sys.path[0], "device_config.json"), "r") as f:
+    with open(os.path.join(sys.path[0], "assistant/device_config.json"), "r") as f:
         return json.load(f)
 
 
