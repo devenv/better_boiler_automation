@@ -1,6 +1,8 @@
-import random
+from logger import get_logger
 
 from assistant import Assistant
+
+logger = get_logger()
 
 
 class BoilerController:
@@ -19,13 +21,13 @@ class BoilerController:
     def turn_on(self):
         if self.test_mode:
             self.test_state = True
-            print('Turned boiler ON')
+            logger.info('Turned boiler ON')
             return True
         self.assistant.boiler_on()
 
     def turn_off(self):
         if self.test_mode:
             self.test_state = False
-            print('Turned boiler OFF')
+            logger.info('Turned boiler OFF')
             return True
         self.assistant.boiler_off()

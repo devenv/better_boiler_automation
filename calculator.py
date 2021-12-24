@@ -1,3 +1,6 @@
+from logger import get_logger
+
+logger = get_logger()
 
 SUN_INTENCITY_TEMPERATURE_MIN = 15
 SUN_INTENCITY_TEMPERATURE_MAX = 35
@@ -14,6 +17,7 @@ BOILER_MIN_HEATING_TIME = 5 / 60
 DESIRED_MAX_INTENCITY_TEMPERATURE = 55
 DESIRED_MIN_INTENCITY_TEMPERATURE = 37
 
+
 class Calculator:
 
     def needed_hours_to_heat(self, weather, intencity):
@@ -24,7 +28,7 @@ class Calculator:
         if delta_energy <= 0:
             return 0
         hours_needed = self._needed_boiler_time(delta_energy)
-        print(f"Hours needed to heat to intencity {intencity}: {hours_needed}")
+        logger.info(f"Hours needed to heat to intencity {intencity}: {hours_needed}")
         return hours_needed
 
     def _sun_output(self, weather):

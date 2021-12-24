@@ -1,4 +1,7 @@
+from logger import get_logger
 from datetime import datetime, timedelta
+
+logger = get_logger()
 
 
 class Scheduler:
@@ -19,6 +22,7 @@ class Scheduler:
             if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time.hour):
                 needs_to_be_on = True
         if not is_on and needs_to_be_on:
+            logger.info(f"Switching on for hour {time.hour} hours to heat {hours_to_heat:.2f}")
             self.boiler_controller.turn_on()
         elif is_on and not needs_to_be_on:
             self.boiler_controller.turn_off()
