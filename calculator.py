@@ -1,25 +1,19 @@
+import json
+import os
+import sys
+
 from logger import get_logger
 
 logger = get_logger()
 
-SUN_INTENCITY_TEMPERATURE_MIN = 15
-SUN_INTENCITY_TEMPERATURE_MAX = 35
 
-SUN_OUTPUT_PER_DAY_PER_SQ_METER_MIN = 0
-SUN_OUTPUT_PER_DAY_PER_SQ_METER_MAX = 5
-SUN_RECEIVING_AREA_IN_SQ_METERS = 2
-
-BOILER_CAPACITY_IN_LITERS = 100
-BOILER_POWER_IN_AMPERES = 10
-VOLTAGE = 220
-BOILER_MIN_HEATING_TIME = 5 / 60
-BOILER_NURFER = 0.8
-
-DESIRED_MAX_INTENCITY_TEMPERATURE = 55
-DESIRED_MIN_INTENCITY_TEMPERATURE = 37
-
+def load_config():
+    with open(os.path.join(sys.path[0], "calculator_config.json"), "r") as f:
+        return json.load(f)
 
 class Calculator:
+
+    config = load_config()
 
     def needed_hours_to_heat(self, weather, intencity):
         avg_temp = sum(data.temperature for data in weather) / len(weather)
@@ -34,29 +28,29 @@ class Calculator:
 
     def _sun_output(self, weather):
         intencity = self._sun_intencity(weather)
-        above_min = intencity * (SUN_OUTPUT_PER_DAY_PER_SQ_METER_MAX - SUN_OUTPUT_PER_DAY_PER_SQ_METER_MIN)
-        return (SUN_OUTPUT_PER_DAY_PER_SQ_METER_MIN + above_min) * SUN_RECEIVING_AREA_IN_SQ_METERS
+        above_min = intencity * (self.config['sun_output_per_day_per_sq_meter_max'] - self.config['sun_output_per_day_per_sq_meter_min'])
+        return (self.config['sun_output_per_day_per_sq_meter_min'] + above_min) * self.config['sun_receiving_area_in_sq_meters']
 
     def _sun_intencity(self, weather):
         avg_clouds = sum(data.clouds for data in weather) / len(weather)
         avg_temp = sum(data.temperature for data in weather) / len(weather)
-        if avg_temp > SUN_INTENCITY_TEMPERATURE_MAX:
-            avg_temp = SUN_INTENCITY_TEMPERATURE_MAX
-        if avg_temp < SUN_INTENCITY_TEMPERATURE_MIN:
-            avg_temp = SUN_INTENCITY_TEMPERATURE_MIN
-        temp_factor = (avg_temp - SUN_INTENCITY_TEMPERATURE_MIN) / (SUN_INTENCITY_TEMPERATURE_MAX - SUN_INTENCITY_TEMPERATURE_MIN)
+        if avg_temp > self.config['sun_intencity_temperature_max']:
+            avg_temp = self.config['sun_intencity_temperature_max']
+        if avg_temp < self.config['sun_intencity_temperature_min']:
+            avg_temp = self.config['sun_intencity_temperature_min']
+        temp_factor = (avg_temp - self.config['sun_intencity_temperature_min']) / (self.config['sun_intencity_temperature_max'] - self.config['sun_intencity_temperature_min'])
         clouds_factor = 1 - avg_clouds / 100
         return temp_factor * clouds_factor
 
     def _needed_energy(self, from_temp, to_temp):
-        return 4.2 * BOILER_CAPACITY_IN_LITERS * (to_temp - from_temp) / 3600
+        return 4.2 * self.config['boiler_capacity_in_liters'] * (to_temp - from_temp) / 3600
 
     def _needed_temperature(self, intencity):
-        return DESIRED_MIN_INTENCITY_TEMPERATURE + intencity / 10 * (DESIRED_MAX_INTENCITY_TEMPERATURE - DESIRED_MIN_INTENCITY_TEMPERATURE)
+        return self.config['desired_min_intencity_temperature'] + intencity / 10 * (self.config['desired_max_intencity_temperature'] - self.config['desired_min_intencity_temperature'])
 
     def _needed_boiler_time(self, needed_energy):
-        boiler_output = BOILER_POWER_IN_AMPERES * VOLTAGE / 1000
+        boiler_output = self.config['boiler_power_in_amperes'] * self.config['voltage'] / 1000
         hours_needed = needed_energy / boiler_output
-        if hours_needed < BOILER_MIN_HEATING_TIME:
+        if hours_needed < int(self.config['boiler_min_heating_time_in_minutes']) / 60:
             return 0
-        return hours_needed * BOILER_NURFER
+        return hours_needed * self.config['boiler_nurfer']
