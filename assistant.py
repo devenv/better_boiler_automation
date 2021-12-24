@@ -1,5 +1,6 @@
-import os
 import json
+import os
+import sys
 
 import click
 import google.auth.transport.grpc
@@ -11,14 +12,24 @@ from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_
 import assistant_helpers
 
 
+#with Assistant(config['device_model_id'], config['device_id']) as assistant:
+    #print(assistant.are_lights_on())
+
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
+def load_config():
+    with open(os.path.join(sys.path[0], "device_config.json"), "r") as f:
+        return json.load(f)
+
 
 class Assistant(object):
-    def __init__(self, device_model_id, device_id):
-        self.device_model_id = device_model_id
-        self.device_id = device_id
+
+    config = load_config()
+
+    def __init__(self):
+        self.device_model_id = self.config['device_model_id']
+        self.device_id = self.config['device_id']
 
         try:
             with open(os.path.join(click.get_app_dir('google-oauthlib-tool'), 'credentials.json'), 'r') as f:
@@ -39,17 +50,15 @@ class Assistant(object):
         if e:
             return False
 
-    def are_lights_on(self):
+    def is_boiler_on(self):
         _, lights_on = self.ask('are lights on?')
         return lights_on
 
-    def lights_on(self):
-        response, _ = self.ask('lights on')
-        return response
+    def boiler_on(self):
+        self.ask('lights on')
 
-    def lights_off(self):
-        response, _ = self.ask('lights off')
-        return response
+    def boiler_off(self):
+        self.ask('lights off')
 
     def ask(self, text_query):
         def iter_assist_requests():

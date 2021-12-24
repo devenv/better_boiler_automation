@@ -1,11 +1,22 @@
-import json
-import os
-import sys
-from textinput import Assistant
+from time import sleep
+from boiler_controller import BoilerController
+from calculator import Calculator
+from scheduler import Scheduler
+from scheduler_config import SchedulerConfig
+from weather_provider import WeatherProvider
 
 
-with open(os.path.join(sys.path[0], "device_config.json"), "r") as f:
-    config = json.load(f)
+def main():
+    weather_provider = WeatherProvider()
+    calculator = Calculator()
+    boiler_controller = BoilerController(test_mode=True, test_state=False)
+    config = SchedulerConfig()
 
-with Assistant(config['device_model_id'], config['device_id']) as assistant:
-    print(assistant.are_lights_on())
+    scheduler = Scheduler(weather_provider, calculator, boiler_controller, config)
+    scheduler.check()
+
+
+if __name__ == "__main__":
+    while True:
+        main()
+        sleep(15 * 60)
