@@ -23,9 +23,12 @@ def get_logger():
 
     logger.handlers = []
 
-    handler = logging.StreamHandler()
+    stdio_handler = logging.StreamHandler()
+    logger.addHandler(stdio_handler)
+
+    file_handler = logging.FileHandler('json.log')
     formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
     return logger
