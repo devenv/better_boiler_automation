@@ -9,7 +9,8 @@ import google.oauth2.credentials
 
 from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_assistant_pb2_grpc
 
-import assistant.assistant_helpers
+from assistant import assistant_helpers
+from logger import get_logger
 
 
 #with Assistant(config['device_model_id'], config['device_id']) as assistant:
@@ -36,7 +37,8 @@ class Assistant(object):
                 credentials = google.oauth2.credentials.Credentials(token=None, **json.load(f))
                 http_request = google.auth.transport.requests.Request()
                 credentials.refresh(http_request)
-        except Exception:
+        except Exception as e:
+            get_logger().exception(e)
             return
 
         channel = google.auth.transport.grpc.secure_authorized_channel(credentials, http_request, ASSISTANT_API_ENDPOINT)
