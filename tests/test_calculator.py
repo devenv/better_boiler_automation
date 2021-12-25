@@ -1,5 +1,4 @@
 from unittest import TestCase
-from unittest.mock import patch
 
 from calculator.calculator import Calculator
 from weather.weather_provider import WeatherData
@@ -124,7 +123,6 @@ class TestScheduler(TestCase):
     def test_needed_boiler_time_min_hours(self):
         hours = self.calculator._needed_boiler_time(0.1)
         self.assertEquals(hours, 0)
-
 
     def test_needed_boiler_time_with_nurfer(self):
         self.calculator.config['boiler_nurfer'] = 0.5

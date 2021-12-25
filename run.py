@@ -1,15 +1,20 @@
 from time import sleep
-from boiler.boiler_controller import BoilerController
+from boiler.boiler_controller import BoilerController, DummyBoilerController
 from calculator.calculator import Calculator
 from scheduler.scheduler import Scheduler
 from scheduler.scheduler_config import SchedulerConfig
 from weather.weather_provider import WeatherProvider
 
+TEST_MODE = True
+
 
 def main():
     weather_provider = WeatherProvider()
     calculator = Calculator()
-    boiler_controller = BoilerController(test_mode=True, test_state=False)
+    if TEST_MODE:
+        boiler_controller = DummyBoilerController(initial_state=False)
+    else:
+        boiler_controller = BoilerController()
     config = SchedulerConfig()
 
     scheduler = Scheduler(weather_provider, calculator, boiler_controller, config)
