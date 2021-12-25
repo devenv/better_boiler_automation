@@ -52,19 +52,6 @@ class Assistant(object):
         if e:
             return False
 
-    def is_boiler_on(self):
-        _, lights_on = self.ask('are lights on?')
-        return lights_on
-
-    def boiler_on(self):
-        self.ask('lights on')
-
-    def boiler_off(self):
-        self.ask('lights off')
-
-    def broadcast(self, message):
-        self.ask(f'broadcast "{message}"')
-
     def ask(self, text_query):
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(

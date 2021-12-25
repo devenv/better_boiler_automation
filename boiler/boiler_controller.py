@@ -16,20 +16,24 @@ class BoilerController:
     def is_on(self):
         if self.test_mode:
             return self.test_state
-        return self.assistant.is_boiler_on()
+        _, lights_on = self.assistant.ask('are lights on?')
+        return lights_on
 
     def turn_on(self):
         if self.test_mode:
             self.test_state = True
             logger.info('Turned boiler ON')
             return True
-        self.assistant.boiler_on()
-        self.assistant.broadcast('boiler is on')
+        self.assistant.ask('turn lights on')
+        self._broadcast('boiler is on')
 
     def turn_off(self):
         if self.test_mode:
             self.test_state = False
             logger.info('Turned boiler OFF')
             return True
-        self.assistant.boiler_off()
-        self.assistant.broadcast('boiler is off')
+        self.assistant.ask('turn lights off')
+        self._broadcast('boiler is off')
+
+    def _broadcast(self, message):
+        self.assistant.ask(f'broadcast "{message}"')
