@@ -1,0 +1,6 @@
+freezegun==1.1.0
+dataclasses==0.6
+google-assistant-grpc==0.2.1
+google-assistant-sdk==0.6.0
+pyowm==3.2.0
+python-json-logger==2.0.2
