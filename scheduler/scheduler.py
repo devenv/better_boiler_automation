@@ -1,8 +1,11 @@
-from ddtrace import tracer
-from logger import get_logger
 from datetime import datetime, timedelta
+from ddtrace import tracer
+
+from logger import get_logger
+from metrics import Metrics
 
 logger = get_logger()
+metrics = Metrics()
 
 
 class Scheduler:
@@ -19,6 +22,7 @@ class Scheduler:
             now = datetime.now()
             is_on = self.boiler_controller.is_on()
             needs_to_be_on = False
+            metrics.gauge("schedules loaded", len(self.config.times))
             for time in self.config.times:
                 with tracer.trace("schedule calculation"):
                     hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intencity)

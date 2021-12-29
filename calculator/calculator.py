@@ -3,8 +3,10 @@ import os
 import sys
 
 from logger import get_logger
+from metrics import Metrics
 
 logger = get_logger()
+metrics = Metrics()
 
 def load_config():
     with open(os.path.join(sys.path[0], "calculator/calculator_config.json"), "r") as f:
@@ -17,14 +19,25 @@ class Calculator:
 
     def needed_hours_to_heat(self, weather, intencity):
         avg_temp = sum(data.temperature for data in weather) / len(weather)
+        metrics.gauge("calculator.avg_temp", avg_temp, tags={'intencity': intencity})
         needed_temperature = self._needed_temperature(intencity)
+        metrics.gauge("calculator.needed_temperatur", needed_temperature, tags={'intencity': intencity})
         needed_energy = self._needed_energy(avg_temp, needed_temperature)
+        metrics.gauge("calculator.needed_energy", needed_energy, tags={'intencity': intencity})
         delta_energy = needed_energy - self._sun_output(weather)
+        metrics.gauge("calculator.delta_energy", delta_energy, tags={'intencity': intencity})
         if delta_energy <= 0:
             return 0
         hours_needed = self._needed_boiler_time(delta_energy)
+        metrics.gauge("calculator.hours_needed", hours_needed, tags={'intencity': intencity})
         logger.info(f"Hours needed to heat to intencity {intencity}: {hours_needed:.2f}h")
         return hours_needed
+
+    def _needed_temperature(self, intencity):
+        return self.config['desired_min_intencity_temperature'] + intencity / 10 * (self.config['desired_max_intencity_temperature'] - self.config['desired_min_intencity_temperature'])
+
+    def _needed_energy(self, from_temp, to_temp):
+        return 4.2 * self.config['boiler_capacity_in_liters'] * (to_temp - from_temp) / 3600
 
     def _sun_output(self, weather):
         intencity = self._sun_intencity(weather)
@@ -41,12 +54,6 @@ class Calculator:
         temp_factor = (avg_temp - self.config['sun_intencity_temperature_min']) / (self.config['sun_intencity_temperature_max'] - self.config['sun_intencity_temperature_min'])
         clouds_factor = 1 - avg_clouds / 100
         return temp_factor * clouds_factor
-
-    def _needed_energy(self, from_temp, to_temp):
-        return 4.2 * self.config['boiler_capacity_in_liters'] * (to_temp - from_temp) / 3600
-
-    def _needed_temperature(self, intencity):
-        return self.config['desired_min_intencity_temperature'] + intencity / 10 * (self.config['desired_max_intencity_temperature'] - self.config['desired_min_intencity_temperature'])
 
     def _needed_boiler_time(self, needed_energy):
         boiler_output = self.config['boiler_power_in_amperes'] * self.config['voltage'] / 1000

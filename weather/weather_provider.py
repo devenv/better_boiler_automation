@@ -9,6 +9,10 @@ import pyowm
 from pyowm.utils import formatting
 
 from logger import get_logger
+from metrics import Metrics
+
+logger = get_logger()
+metrics = Metrics()
 
 
 def load_api_key():
@@ -30,6 +34,7 @@ class WeatherProvider:
 
     api_key = load_api_key()
     location = load_location()
+
     HOURS_TO_LOOK_BACK = 4
 
     def get_weather_data(self):
@@ -39,11 +44,18 @@ class WeatherProvider:
             mgr = owm.weather_manager()
             city = owm.city_id_registry().locations_for(self.location)[0]
             current_weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
-            get_logger().info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
+
+            metrics.gauge("current_weather.temperature", current_weather.temperature)
+            metrics.gauge("current_weather.clouds", current_weather.clouds)
+            logger.info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
+
             results.append(current_weather)
 
             for i in range(1, self.HOURS_TO_LOOK_BACK):
-                results.append(self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current))
+                weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
+                results.append(weather)
+                metrics.gauge("previous_weather.temperature", weather.temperature, tags={'hours_ago': str(i)})
+                metrics.gauge("previous_weather.clouds", weather.clouds, tags={'hours_ago': str(i)})
 
             return results
         
