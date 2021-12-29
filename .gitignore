@@ -1,7 +1,7 @@
 __pycache__
 .pytest_cache
-/.venv
-/assistant/client_secret.json
-/assistant/device_config.json
-/weather_api_key.txt
-/my_location.txt
+.venv
+assistant/client_secret.json
+assistant/device_config.json
+weather_api_key.txt
+my_location.txt
