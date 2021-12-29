@@ -4,6 +4,8 @@ set -e
 export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export DD_TRACE_ENABLED=False
 
+. venv/bin/activate
+
 rm -rf boiler_clone
 git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
 
@@ -13,7 +15,6 @@ rm -rf better_boiler_automation_configs
 git clone git@github.com:devenv/better_boiler_automation_configs.git
 rsync -avP better_boiler_automation_configs/ boiler_clone/
 
-. venv/bin/activate
 cd boiler_clone
 
 #pip3.7 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
