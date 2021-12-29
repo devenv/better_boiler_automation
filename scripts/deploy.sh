@@ -3,6 +3,8 @@
 set -e
 
 export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
+export DD_TRACE_ENABLED=False
+export STATS_ENABLED=False
 
 rm -rf boiler_clone
 git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
