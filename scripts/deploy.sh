@@ -1,12 +1,14 @@
 #!/bin/sh
 
 set -e
-export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 
-python -c "import metrics; metrics.Metrics().event('deploy', 'started', alert_type='info')"
+export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 
 rm -rf boiler_clone
 git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
+
+
+python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'started', alert_type='info')"
 
 rm -rf better_boiler_automation_configs
 git clone git@github.com:devenv/better_boiler_automation_configs.git
@@ -23,7 +25,7 @@ if [ $? -eq 0 ]; then
   echo 'requirements installed'
 else
   echo 'failed installing requirements'
-  python -c "import metrics; metrics.Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
+  python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
   exit 2
 fi
 
@@ -34,7 +36,7 @@ if [ $? -eq 0 ]; then
   echo 'tests passed'
 else
   echo 'tests failed'
-  python -c "import metrics; metrics.Metrics().event('deploy', 'tests failed', alert_type='error')"
+  python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
   return 1
 fi
 
@@ -42,4 +44,4 @@ cd ..
 
 rm -rf boiler
 cp -r boiler_clone boiler
-python -c "import metrics; metrics.Metrics().event('deploy', 'finshed', alert_type='success')"
+python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'finshed', alert_type='success')"

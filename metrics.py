@@ -23,6 +23,6 @@ class Metrics:
         if STATS_ENABLED:
             statsd.gauge(metric, value, tags)
 
-    def event(title, message, alert_type='success'):
+    def event(self, title, message, alert_type='success'):
         if STATS_ENABLED:
             statsd.event(title, message, alert_type=alert_type)
