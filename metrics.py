@@ -2,7 +2,7 @@ import os
 
 from datadog import initialize, statsd
 
-STATS_ENABLED = os.getenv('STATS_ENABLED')
+STATS_ENABLED = os.getenv('STATS_ENABLED') == 'True'
 
 
 class Metrics:
