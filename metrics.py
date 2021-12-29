@@ -10,5 +10,8 @@ class Metrics:
 
     initialize(**options)
 
-    def incr(self, metric, tags):
+    def incr(self, metric, tags={}):
         statsd.increment(metric, tags)
+
+    def gauge(self, metric, value, tags):
+        statsd.gauge(metric, value, tags)

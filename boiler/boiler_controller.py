@@ -1,5 +1,6 @@
-from logger import get_logger
+from ddtrace import tracer
 
+from logger import get_logger
 from assistant.assistant import Assistant
 
 logger = get_logger()
@@ -10,20 +11,24 @@ class BoilerController:
     assistant = Assistant()
 
     def is_on(self):
-        _, lights_on = self.assistant.ask('are lights on?')
-        return lights_on
+        with tracer.trace("is boiler on?"):
+            _, lights_on = self.assistant.ask('is boiler on?')
+            return lights_on
 
     def turn_on(self):
-        self.assistant.ask('turn lights on')
-        self._broadcast('Boiler is on')
+        with tracer.trace("turn boiler on"):
+            self.assistant.ask('turn boiler on')
+            self._broadcast('Boiler is on')
 
     def turn_off(self):
-        self.assistant.ask('turn lights off')
-        self._broadcast('Boiler is off')
+        with tracer.trace("turn boiler off"):
+            self.assistant.ask('turn boiler off')
+            self._broadcast('Boiler is off')
 
     def _broadcast(self, message):
-        self.assistant.ask(f'broadcast "{message}"')
-        logger.info(message)
+        with tracer.trace("broadcast"):
+            self.assistant.ask(f'broadcast "{message}"')
+            logger.info(message)
 
 
 class DummyBoilerController:
