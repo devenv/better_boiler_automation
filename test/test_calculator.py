@@ -9,7 +9,7 @@ class TestScheduler(TestCase):
     def setUp(self):
         self.calculator = Calculator()
         self.calculator.config = {
-            'sun_intencity_temperature_min': 15,
+            'sun_intencity_temperature_min': 20,
             'sun_intencity_temperature_max': 30,
             'sun_output_per_day_per_sq_meter_min': 0,
             'sun_output_per_day_per_sq_meter_max': 5,
