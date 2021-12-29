@@ -1,14 +1,11 @@
 #!/bin/sh
-
 set -e
 
 export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export DD_TRACE_ENABLED=False
-export STATS_ENABLED=False
 
 rm -rf boiler_clone
 git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
-
 
 python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'started', alert_type='info')"
 
@@ -31,16 +28,18 @@ else
   exit 2
 fi
 
-
 echo Running tests
+export STATS_ENABLED=False
 python3.7 -m unittest
 if [ $? -eq 0 ]; then
   echo 'tests passed'
 else
   echo 'tests failed'
+  export STATS_ENABLED=True
   python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
   return 1
 fi
+export STATS_ENABLED=True
 
 cd ..
 
