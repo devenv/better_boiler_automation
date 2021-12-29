@@ -26,7 +26,7 @@ def get_logger():
     stdio_handler = logging.StreamHandler()
     logger.addHandler(stdio_handler)
 
-    file_handler = logging.FileHandler('json.log')
+    file_handler = logging.FileHandler('boiler.log')
     formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(message)s')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
