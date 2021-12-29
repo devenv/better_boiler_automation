@@ -1,4 +1,8 @@
+import os
+
 from datadog import initialize, statsd
+
+STATS_ENABLED = os.getenv('STATS_ENABLED') or True
 
 
 class Metrics:
@@ -8,10 +12,13 @@ class Metrics:
         'statsd_port':8125
     }
 
-    initialize(**options)
+    if STATS_ENABLED:
+        initialize(**options)
 
     def incr(self, metric, tags={}):
-        statsd.increment(metric, tags)
+        if STATS_ENABLED:
+            statsd.increment(metric, tags)
 
     def gauge(self, metric, value, tags):
-        statsd.gauge(metric, value, tags)
+        if STATS_ENABLED:
+            statsd.gauge(metric, value, tags)
