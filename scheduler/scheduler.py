@@ -21,10 +21,10 @@ class Scheduler:
             weather = self.weather_provider.get_weather_data()
             now = datetime.now()
             is_on = self.boiler_controller.is_on()
-            metrics.gauge("schedules loaded", len(self.config.times))
+            metrics.gauge("scheduler.schedules_loaded", len(self.config.times))
             with tracer.trace("schedule calculation"):
                 time = self._get_next_schedule()
-                metrics.gauge("next schedule", time.hour + self.config.TIME_ZONE + time.minute / 60)
+                metrics.gauge("scheduler.next_schedule", time.hour + self.config.TIME_ZONE + time.minute / 60)
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intencity)
                 if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
                     if not is_on:
