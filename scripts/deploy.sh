@@ -24,7 +24,7 @@ python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', '
 
 rm -rf better_boiler_automation_configs
 git clone git@github.com:devenv/better_boiler_automation_configs.git
-rsync -avP better_boiler_automation_configs/ boiler_clone/
+rsync -avP --exclude=.git better_boiler_automation_configs/ boiler_clone/
 
 cd boiler_clone
 
