@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from ddtrace import tracer
 import pyowm
 from pyowm.utils import formatting
+from pyowm.weatherapi25.weather import Weather
 
 from logger import get_logger
 from metrics import Metrics
@@ -37,9 +38,8 @@ class WeatherProvider:
 
     HOURS_TO_LOOK_BACK = 4
 
-    def get_weather_data(self):
+    def get_weather_data(self) -> list[WeatherData]:
         with tracer.trace("get weather"):
-            results = []
             owm = pyowm.OWM(self.api_key)
             mgr = owm.weather_manager()
             city = owm.city_id_registry().locations_for(self.location)[0]
@@ -49,7 +49,7 @@ class WeatherProvider:
             metrics.gauge("current_weather.clouds", current_weather.clouds)
             logger.info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
 
-            results.append(current_weather)
+            results = [current_weather]
 
             for i in range(1, self.HOURS_TO_LOOK_BACK):
                 weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
@@ -59,7 +59,7 @@ class WeatherProvider:
 
             return results
         
-    def weather_to_weather_data(self, weather):
+    def weather_to_weather_data(self, weather: Weather) -> WeatherData:
         return WeatherData(
             temperature=weather.temperature('celsius')['temp'],
             clouds=weather.clouds,

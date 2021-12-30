@@ -13,9 +13,6 @@ from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_
 from logger import get_logger
 
 
-#with Assistant(config['device_model_id'], config['device_id']) as assistant:
-    #print(assistant.are_lights_on())
-
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
@@ -52,7 +49,7 @@ class Assistant(object):
         if e:
             return False
 
-    def ask(self, text_query):
+    def ask(self, text_query: str) -> tuple[str, bool]:
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(
                 audio_out_config=embedded_assistant_pb2.AudioOutConfig(

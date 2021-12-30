@@ -20,4 +20,11 @@ class SchedulerConfig:
     config = load_config()
 
     def __init__(self):
-        self.times = [Time(item['hour'] - self.TIME_ZONE, item['minute'], item['intencity']) for item in self.config]
+        self.times = [Time(self.cull_to_real_hour(item['hour'] - self.TIME_ZONE), item['minute'], item['intencity']) for item in self.config]
+
+    def cull_to_real_hour(self, hour):
+        if hour > 23:
+            return self.cull_to_real_hour(hour - 24)
+        if hour < 0:
+            return self.cull_to_real_hour(hour + 24)
+        return hour
