@@ -30,6 +30,9 @@ class Scheduler:
             is_on = self.boiler_controller.is_on()
 
             with tracer.trace("schedule calculation"):
+
+                self.calculator.calculate_for_all_intensities(weather)
+
                 time = self._get_next_schedule()
                 metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60)
                 metrics.gauge("scheduler.next_intensity", time.intensity)

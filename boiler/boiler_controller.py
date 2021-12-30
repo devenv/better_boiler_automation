@@ -43,7 +43,7 @@ class DummyBoilerController:
 
     assistant = Assistant()
 
-    def __init__(self, initial_state: bool=False):
+    def __init__(self, initial_state: bool = False):
         self.test_state = initial_state
 
     def is_on(self) -> bool:
