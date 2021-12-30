@@ -10,13 +10,13 @@
         "intencity": 6
     },
     {
-        "hour": 21,
+        "hour": 22,
         "minute": 0,
         "intencity": 8
     },
     {
-        "hour": 23,
-        "minute": 30,
+        "hour": 0,
+        "minute": 0,
         "intencity": 6
     }
 ]
