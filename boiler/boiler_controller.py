@@ -24,12 +24,14 @@ class BoilerController:
             self.assistant.ask('turn boiler on')
             self._broadcast('Turning boiler on')
             metrics.event('boiler state', 'boiler heating', alert_type='info')
+            metrics.gauge('boiler.boiler_on', 1)
 
     def turn_off(self) -> None:
         with tracer.trace("turn boiler off"):
             self.assistant.ask('turn boiler off')
             self._broadcast('Turning boiler off')
             metrics.event('boiler state', 'boiler off', alert_type='info')
+            metrics.gauge('boiler.boiler_on', 0)
 
     def _broadcast(self, message: str) -> None:
         with tracer.trace("broadcast"):
