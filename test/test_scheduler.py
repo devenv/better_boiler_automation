@@ -70,12 +70,12 @@ class TestScheduler(TestCase):
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_easy(self):
         scheduler = Scheduler(None, None, None, None)
-        self.assertEquals(scheduler._find_next_hour(7), datetime(2021, 1, 1, 7, 0, 0))
+        self.assertEquals(scheduler._find_next_hour(7, 30), datetime(2021, 1, 1, 7, 30, 0))
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_with_jump(self):
         scheduler = Scheduler(None, None, None, None)
-        self.assertEquals(scheduler._find_next_hour(4), datetime(2021, 1, 2, 4, 0, 0))
+        self.assertEquals(scheduler._find_next_hour(4, 20), datetime(2021, 1, 2, 4, 20, 0))
 
     def _run_simulation(self, weather_data, times):
         weather_provider = MagicMock()
