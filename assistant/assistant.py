@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import sys
+from typing import Tuple
 
 import click
 import google.auth.transport.grpc
@@ -49,7 +50,7 @@ class Assistant(object):
         if e:
             return False
 
-    def ask(self, text_query: str) -> tuple[str, bool]:
+    def ask(self, text_query: str) -> Tuple[str, bool]:
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(
                 audio_out_config=embedded_assistant_pb2.AudioOutConfig(
