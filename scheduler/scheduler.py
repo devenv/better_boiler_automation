@@ -35,6 +35,12 @@ class Scheduler:
                 metrics.gauge("scheduler.next_intensity", time.intensity)
 
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
+
+                eta_on = (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
+                eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
+                metrics.gauge("scheduler.eta_on", eta_on)
+                metrics.gauge("scheduler.eta_off", eta_off)
+
                 if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
                     if not is_on:
                         logger.info(f"Switching on for hour {self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE)}:{time.minute} to heat {hours_to_heat:.2f}")
