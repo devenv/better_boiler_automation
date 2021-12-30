@@ -8,6 +8,15 @@ export STATS_ENABLED=True
 rm -rf boiler_clone
 git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
 
+cd boiler_clone
+new_last_commit=$(git log --format="%H" -n 1)
+cd ../boiler
+old_last_commit=$(git log --format="%H" -n 1)
+cd ..
+if [ "$new_last_commit" = "$old_last_commit" ]; then
+  exit 0
+fi
+
 python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'started', alert_type='info')"
 
 rm -rf better_boiler_automation_configs
