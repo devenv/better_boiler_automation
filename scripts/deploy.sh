@@ -30,17 +30,19 @@ cd boiler_clone
 
 #pip3.7 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
 
-echo Installing requirements
-pip3.7 install -r requirements.txt
-if [ $? -eq 0 ]; then
-  echo 'requirements installed'
-else
-  echo 'failed installing requirements'
-  python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
-  exit 2
+if ! cmp boiler_clone/requirements.txt boiler/requirements.txt >/dev/null 2>&1; then
+  echo "Installing requirements"
+  pip3.7 install -r requirements.txt
+  if [ $? -eq 0 ]; then
+    echo 'requirements installed'
+  else
+    echo 'failed installing requirements'
+    python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
+    exit 2
+  fi
 fi
 
-echo Running tests
+echo "Running tests"
 export STATS_ENABLED=False
 python3.7 -m unittest
 if [ $? -eq 0 ]; then
