@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import sys
@@ -9,7 +10,6 @@ import google.oauth2.credentials
 
 from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_assistant_pb2_grpc
 
-from assistant import assistant_helpers
 from logger import get_logger
 
 
@@ -58,7 +58,7 @@ class Assistant(object):
                 audio_out_config=embedded_assistant_pb2.AudioOutConfig(
                     encoding='LINEAR16',
                     sample_rate_hertz=16000,
-                    volume_percentage=0,
+                    volume_percentage=100,
                 ),
                 dialog_state_in=embedded_assistant_pb2.DialogStateIn(
                     language_code='en-US',
@@ -73,16 +73,14 @@ class Assistant(object):
             )
             config.screen_out_config.screen_mode = embedded_assistant_pb2.ScreenOutConfig.PLAYING
             req = embedded_assistant_pb2.AssistRequest(config=config)
-            assistant_helpers.log_assist_request_without_audio(req)
             yield req
 
         text_response = None
-        lights_on = False
+        boiler_on = False
         for resp in self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE):
-            assistant_helpers.log_assist_response_without_audio(resp)
             audio_data = resp.audio_out.audio_data
-            if len(audio_data) > 1 and audio_data[1] == 240:
-                lights_on = True
+            if hashlib.md5(audio_data).hexdigest() == 'b68beb589c2104308994c3afe42073dd':
+                boiler_on = True
             if resp.dialog_state_out.supplemental_display_text:
                 text_response = resp.dialog_state_out.supplemental_display_text
-        return text_response, lights_on
+        return text_response, boiler_on

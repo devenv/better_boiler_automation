@@ -15,9 +15,9 @@ class BoilerController:
 
     def is_on(self):
         with tracer.trace("is boiler on?"):
-            _, lights_on = self.assistant.ask('is boiler on?')
-            metrics.gauge('lights_on', lights_on)
-            return lights_on
+            _, boiler_on = self.assistant.ask('is boiler on?')
+            metrics.gauge('boiler_on', boiler_on)
+            return boiler_on
 
     def turn_on(self):
         with tracer.trace("turn boiler on"):
