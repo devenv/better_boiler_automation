@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import os
 import sys
+from typing import List
 
 
 from dataclasses import dataclass
@@ -38,7 +39,7 @@ class WeatherProvider:
 
     HOURS_TO_LOOK_BACK = 4
 
-    def get_weather_data(self) -> list[WeatherData]:
+    def get_weather_data(self) -> List[WeatherData]:
         with tracer.trace("get weather"):
             owm = pyowm.OWM(self.api_key)
             mgr = owm.weather_manager()

@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from typing import List
 
 from weather.weather_provider import WeatherData
 
@@ -19,7 +20,7 @@ class Calculator:
 
     config = load_config()
 
-    def needed_hours_to_heat(self, weather: list[WeatherData], intencity: int) -> float:
+    def needed_hours_to_heat(self, weather: List[WeatherData], intencity: int) -> float:
         avg_temp = sum(data.temperature for data in weather) / len(weather)
         metrics.gauge("calculator.avg_temp", avg_temp, tags={'intencity': intencity})
 
@@ -47,12 +48,12 @@ class Calculator:
     def _needed_energy(self, from_temp, to_temp):
         return 4.2 * self.config['boiler_capacity_in_liters'] * (to_temp - from_temp) / 3600
 
-    def _sun_output(self, weather: list[WeatherData]) -> float:
+    def _sun_output(self, weather: List[WeatherData]) -> float:
         intencity = self._sun_intencity(weather)
         above_min = intencity * (self.config['sun_output_per_day_per_sq_meter_max'] - self.config['sun_output_per_day_per_sq_meter_min'])
         return (self.config['sun_output_per_day_per_sq_meter_min'] + above_min) * self.config['sun_receiving_area_in_sq_meters']
 
-    def _sun_intencity(self, weather: list[WeatherData]) -> float:
+    def _sun_intencity(self, weather: List[WeatherData]) -> float:
         avg_clouds = sum(data.clouds for data in weather) / len(weather)
         avg_temp = sum(data.temperature for data in weather) / len(weather)
 
