@@ -22,14 +22,16 @@ class Scheduler:
             now = datetime.now()
             is_on = self.boiler_controller.is_on()
             needs_to_be_on = False
+            needs_to_be_on_time = None
             metrics.gauge("schedules loaded", len(self.config.times))
             for time in self.config.times:
                 with tracer.trace("schedule calculation"):
                     hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intencity)
                     if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time.hour, time.minute):
                         needs_to_be_on = True
+                        needs_to_be_on_time = time
             if not is_on and needs_to_be_on:
-                logger.info(f"Switching on for hour {time.hour}:{time.minute} hours to heat {hours_to_heat:.2f}")
+                logger.info(f"Switching on for hour {needs_to_be_on_time.hour}:{needs_to_be_on_time.minute} to heat {hours_to_heat:.2f}")
                 self.boiler_controller.turn_on()
             elif is_on and not needs_to_be_on:
                 self.boiler_controller.turn_off()
