@@ -31,7 +31,7 @@ class Scheduler:
                         needs_to_be_on = True
                         needs_to_be_on_time = time
             if not is_on and needs_to_be_on:
-                logger.info(f"Switching on for hour {needs_to_be_on_time.hour}:{needs_to_be_on_time.minute} to heat {hours_to_heat:.2f}")
+                logger.info(f"Switching on for hour {needs_to_be_on_time.hour + self.config.TIME_ZONE}:{needs_to_be_on_time.minute} to heat {hours_to_heat:.2f}")
                 self.boiler_controller.turn_on()
             elif is_on and not needs_to_be_on:
                 self.boiler_controller.turn_off()
