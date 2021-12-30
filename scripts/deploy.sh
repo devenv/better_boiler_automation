@@ -30,7 +30,7 @@ cd boiler_clone
 
 #pip3.7 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
 
-if ! cmp boiler_clone/requirements.txt boiler/requirements.txt >/dev/null 2>&1; then
+if ! cmp requirements.txt ../boiler/requirements.txt >/dev/null 2>&1; then
   echo "Installing requirements"
   pip3.7 install -r requirements.txt
   if [ $? -eq 0 ]; then
