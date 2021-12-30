@@ -1,4 +1,7 @@
 #!/bin/sh
+
+pidof -o %PPID -x $0 >/dev/null && echo "ERROR: $0 is already running" && exit 1
+
 export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export DD_TRACE_ENABLED=False
 export STATS_ENABLED=True

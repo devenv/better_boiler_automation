@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+pidof -o %PPID -x $0 >/dev/null && echo "ERROR: $0 is already running" && exit 1
 
 . venv/bin/activate
 cd boiler
