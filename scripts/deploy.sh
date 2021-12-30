@@ -1,6 +1,4 @@
 #!/bin/sh
-set -e
-
 export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export DD_TRACE_ENABLED=False
 export STATS_ENABLED=True
