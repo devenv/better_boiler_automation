@@ -36,6 +36,7 @@ class Scheduler:
                 time = self._get_next_schedule()
                 metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60)
                 metrics.gauge("scheduler.next_intensity", time.intensity)
+                metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity))
 
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
 
