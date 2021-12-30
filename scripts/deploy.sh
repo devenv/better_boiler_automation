@@ -14,6 +14,7 @@ cd ../boiler
 old_last_commit=$(git log --format="%H" -n 1)
 cd ..
 if [ "$new_last_commit" = "$old_last_commit" ]; then
+  echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
   exit 0
 fi
 
