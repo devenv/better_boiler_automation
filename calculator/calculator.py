@@ -23,7 +23,7 @@ class Calculator:
 
     def calculate_for_all_intensities(self, weather: List[WeatherData]):
         self.report_metrics = True
-        for intensity in range(1, 11):
+        for intensity in range(4, 11):
             self.needed_hours_to_heat(weather, intensity)
         self.report_metrics = False
 
