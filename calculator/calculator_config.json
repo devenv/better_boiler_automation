@@ -8,7 +8,7 @@
     "boiler_power_in_amperes": 10,
     "voltage": 220,
     "boiler_min_heating_time_in_minutes": 5,
-    "boiler_nurfer": 2.8,
+    "boiler_nurfer": 1.2,
     "desired_max_intencity_temperature": 55,
     "desired_min_intencity_temperature": 37
 }
