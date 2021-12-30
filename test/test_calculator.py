@@ -3,25 +3,14 @@ from unittest import TestCase
 from calculator.calculator import Calculator
 from weather.weather_provider import WeatherData
 
+from test.calculator_config_override import calculator_config_override
+
 
 class TestScheduler(TestCase):
 
     def setUp(self):
         self.calculator = Calculator()
-        self.calculator.config = {
-            'sun_intencity_temperature_min': 15,
-            'sun_intencity_temperature_max': 30,
-            'sun_output_per_day_per_sq_meter_min': 0,
-            'sun_output_per_day_per_sq_meter_max': 5,
-            'sun_receiving_area_in_sq_meters': 2,
-            'boiler_capacity_in_liters': 100,
-            'boiler_power_in_amperes': 10,
-            'voltage': 220,
-            'desired_max_intencity_temperature': 55,
-            'desired_min_intencity_temperature': 40,
-            'boiler_min_heating_time_in_minutes': 15,
-            'boiler_nurfer': 1.0,
-        }
+        self.calculator.config = calculator_config_override()
 
     def test_needed_hours_to_heat_no_need(self):
         weather = [
@@ -40,6 +29,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=15, clouds=100),
             WeatherData(temperature=15, clouds=100),
         ]
+        self.calculator.stop = True
         hours = self.calculator.needed_hours_to_heat(weather, 10)
         self.assertAlmostEquals(hours, 2.12, places=2)
 
