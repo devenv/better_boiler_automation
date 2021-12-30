@@ -21,7 +21,7 @@ class Metrics:
 
     def gauge(self, metric, value, tags={}):
         if STATS_ENABLED:
-            statsd.gauge(metric, value, tags)
+            statsd.gauge(metric, value, [f"{k}:{v}" for k, v in tags.items()])
 
     def event(self, title, message, alert_type='success'):
         if STATS_ENABLED:
