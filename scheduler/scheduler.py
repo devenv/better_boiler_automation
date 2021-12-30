@@ -32,6 +32,7 @@ class Scheduler:
             with tracer.trace("schedule calculation"):
                 time = self._get_next_schedule()
                 metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60)
+                metrics.gauge("scheduler.next_intensity", time.intensity)
 
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intencity)
                 if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
