@@ -52,8 +52,8 @@ class TestScheduler(TestCase):
 
         self._get_scheduler(3.5, boiler_controller, [8]).check()
 
-        self.assertEquals(boiler_controller.turned_on, 1)
-        self.assertEquals(boiler_controller.turned_off, 0)
+        self.assertEqual(boiler_controller.turned_on, 1)
+        self.assertEqual(boiler_controller.turned_off, 0)
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_scheduler_should_turn_off(self):
@@ -61,8 +61,8 @@ class TestScheduler(TestCase):
 
         self._get_scheduler(3.5, boiler_controller, [11]).check()
 
-        self.assertEquals(boiler_controller.turned_on, 0)
-        self.assertEquals(boiler_controller.turned_off, 1)
+        self.assertEqual(boiler_controller.turned_on, 0)
+        self.assertEqual(boiler_controller.turned_off, 1)
 
     @freeze_time(datetime(2021, 1, 1, 23, 0, 0))
     def test_scheduler_should_turn_on_with_jump(self):
@@ -70,8 +70,8 @@ class TestScheduler(TestCase):
 
         self._get_scheduler(3.5, boiler_controller, [1]).check()
 
-        self.assertEquals(boiler_controller.turned_on, 1)
-        self.assertEquals(boiler_controller.turned_off, 0)
+        self.assertEqual(boiler_controller.turned_on, 1)
+        self.assertEqual(boiler_controller.turned_off, 0)
 
     @freeze_time(datetime(2021, 1, 1, 4, 30, 0))
     def test_find_next_schedule(self):
@@ -80,8 +80,8 @@ class TestScheduler(TestCase):
         scheduler = self._get_scheduler(3.5, boiler_controller, range(23))
 
         next_schedule = scheduler._get_next_schedule()
-        self.assertEquals(next_schedule.hour, 5)
-        self.assertEquals(next_schedule.minute, 0)
+        self.assertEqual(next_schedule.hour, 5)
+        self.assertEqual(next_schedule.minute, 0)
 
     @freeze_time(datetime(2021, 1, 1, 23, 30, 0))
     def test_find_next_schedule_warp(self):
@@ -90,18 +90,18 @@ class TestScheduler(TestCase):
         scheduler = self._get_scheduler(3.5, boiler_controller, [12, 23, 1])
 
         next_schedule = scheduler._get_next_schedule()
-        self.assertEquals(next_schedule.hour, 1)
-        self.assertEquals(next_schedule.minute, 0)
+        self.assertEqual(next_schedule.hour, 1)
+        self.assertEqual(next_schedule.minute, 0)
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_easy(self):
         scheduler = Scheduler(None, None, None, None)
-        self.assertEquals(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
+        self.assertEqual(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_with_jump(self):
         scheduler = Scheduler(None, None, None, None)
-        self.assertEquals(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
+        self.assertEqual(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
 
     def _run_simulation(self, weather_data, times):
         weather_provider = MagicMock()
@@ -116,10 +116,10 @@ class TestScheduler(TestCase):
         return boiler_controller
 
     def _verify_execution(self, boiler_controller, *executions):
-        self.assertEquals(boiler_controller.turned_on, len(executions))
-        self.assertEquals(boiler_controller.turned_off, len(executions))
-        self.assertEquals(boiler_controller.turned_on_times, [self._datetime_for_hour(n[0]) for n in executions])
-        self.assertEquals(boiler_controller.turned_off_times, [self._datetime_for_hour(n[1]) for n in executions])
+        self.assertEqual(boiler_controller.turned_on, len(executions))
+        self.assertEqual(boiler_controller.turned_off, len(executions))
+        self.assertEqual(boiler_controller.turned_on_times, [self._datetime_for_hour(n[0]) for n in executions])
+        self.assertEqual(boiler_controller.turned_off_times, [self._datetime_for_hour(n[1]) for n in executions])
         
     def _get_scheduler(self, hours_to_heat, boiler_controller, configured_hours):
         self.calculator.needed_hours_to_heat = MagicMock(return_value=hours_to_heat)

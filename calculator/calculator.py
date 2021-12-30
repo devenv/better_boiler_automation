@@ -38,7 +38,6 @@ class Calculator:
 
         hours_needed = self._needed_boiler_time(delta_energy)
         metrics.gauge("calculator.hours_needed", hours_needed, tags={'intensity': intensity})
-        logger.info(f"Hours needed to heat to intensity {intensity}: {hours_needed:.2f}h")
 
         return hours_needed
 

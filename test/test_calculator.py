@@ -20,7 +20,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=31, clouds=60),
         ]
         hours = self.calculator.needed_hours_to_heat(weather, 10)
-        self.assertEquals(hours, 0)
+        self.assertEqual(hours, 0)
 
     def test_needed_hours_to_heat_full(self):
         weather = [
@@ -61,7 +61,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=31, clouds=60),
         ]
         sun_intensity = self.calculator._sun_intensity(weather)
-        self.assertEquals(sun_intensity, 0.5)
+        self.assertEqual(sun_intensity, 0.5)
 
     def test_sun_output(self):
         weather = [
@@ -71,7 +71,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=31, clouds=60),
         ]
         sun_output = self.calculator._sun_output(weather)
-        self.assertEquals(sun_output, 5)
+        self.assertEqual(sun_output, 5)
 
     def test_sun_output_max(self):
         weather = [
@@ -81,7 +81,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=31, clouds=0),
         ]
         sun_output = self.calculator._sun_output(weather)
-        self.assertEquals(sun_output, 10)
+        self.assertEqual(sun_output, 10)
 
     def test_sun_output_min(self):
         weather = [
@@ -91,16 +91,16 @@ class TestScheduler(TestCase):
             WeatherData(temperature=10, clouds=0),
         ]
         sun_output = self.calculator._sun_output(weather)
-        self.assertEquals(sun_output, 0)
+        self.assertEqual(sun_output, 0)
 
     def test_needed_temperature(self):
-        self.assertEquals(self.calculator._needed_temperature(0), 40)
-        self.assertEquals(self.calculator._needed_temperature(5), 47.5)
-        self.assertEquals(self.calculator._needed_temperature(10), 55)
+        self.assertEqual(self.calculator._needed_temperature(0), 40)
+        self.assertEqual(self.calculator._needed_temperature(5), 47.5)
+        self.assertEqual(self.calculator._needed_temperature(10), 55)
 
     def test_needed_energy(self):
         needed_energy = self.calculator._needed_energy(20, 50)
-        self.assertEquals(needed_energy, 3.5)
+        self.assertEqual(needed_energy, 3.5)
 
     def test_needed_boiler_time(self):
         hours = self.calculator._needed_boiler_time(5)
@@ -108,11 +108,11 @@ class TestScheduler(TestCase):
 
     def test_needed_boiler_time_min_hours(self):
         hours = self.calculator._needed_boiler_time(0.1)
-        self.assertEquals(hours, 0)
+        self.assertEqual(hours, 0)
 
     def test_needed_boiler_time_min_hours(self):
         hours = self.calculator._needed_boiler_time(0.1)
-        self.assertEquals(hours, 0)
+        self.assertEqual(hours, 0)
 
     def test_needed_boiler_time_with_nurfer(self):
         self.calculator.config['boiler_nurfer'] = 0.5
