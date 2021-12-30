@@ -22,13 +22,13 @@ class BoilerController:
     def turn_on(self) -> None:
         with tracer.trace("turn boiler on"):
             self.assistant.ask('turn boiler on')
-            self._broadcast('Boiler is on')
+            self._broadcast('Turning boiler on')
             metrics.event('boiler state', 'boiler heating', alert_type='info')
 
     def turn_off(self) -> None:
         with tracer.trace("turn boiler off"):
             self.assistant.ask('turn boiler off')
-            self._broadcast('Boiler is off')
+            self._broadcast('Turning boiler off')
             metrics.event('boiler state', 'boiler off', alert_type='info')
 
     def _broadcast(self, message: str) -> None:
