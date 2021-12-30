@@ -11,7 +11,7 @@ def load_config():
 class Time:
     hour: int
     minute: int
-    intencity: int
+    intensity: int
 
 
 class SchedulerConfig:
@@ -20,7 +20,7 @@ class SchedulerConfig:
     config = load_config()
 
     def __init__(self):
-        self.times = [Time(self.cull_to_real_hour(item['hour'] - self.TIME_ZONE), item['minute'], item['intencity']) for item in self.config]
+        self.times = [Time(self.cull_to_real_hour(item['hour'] - self.TIME_ZONE), item['minute'], item['intensity']) for item in self.config]
 
     def cull_to_real_hour(self, hour):
         if hour > 23:

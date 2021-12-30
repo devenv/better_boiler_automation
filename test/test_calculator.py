@@ -33,7 +33,7 @@ class TestScheduler(TestCase):
         hours = self.calculator.needed_hours_to_heat(weather, 10)
         self.assertAlmostEquals(hours, 2.12, places=2)
 
-    def test_needed_hours_to_heat_full_low_intencity(self):
+    def test_needed_hours_to_heat_full_low_intensity(self):
         weather = [
             WeatherData(temperature=15, clouds=100),
             WeatherData(temperature=15, clouds=100),
@@ -53,15 +53,15 @@ class TestScheduler(TestCase):
         hours = self.calculator.needed_hours_to_heat(weather, 10)
         self.assertAlmostEquals(hours, 0.64, places=2)
 
-    def test_sun_intencity(self):
+    def test_sun_intensity(self):
         weather = [
             WeatherData(temperature=29, clouds=40),
             WeatherData(temperature=30, clouds=50),
             WeatherData(temperature=30, clouds=50),
             WeatherData(temperature=31, clouds=60),
         ]
-        sun_intencity = self.calculator._sun_intencity(weather)
-        self.assertEquals(sun_intencity, 0.5)
+        sun_intensity = self.calculator._sun_intensity(weather)
+        self.assertEquals(sun_intensity, 0.5)
 
     def test_sun_output(self):
         weather = [

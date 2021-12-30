@@ -125,7 +125,7 @@ class TestScheduler(TestCase):
         self.calculator.needed_hours_to_heat = MagicMock(return_value=hours_to_heat)
         weather_provider = MagicMock()
         config = MagicMock()
-        config.times = [Time(hour=hour, minute=0, intencity=0) for hour in configured_hours]
+        config.times = [Time(hour=hour, minute=0, intensity=0) for hour in configured_hours]
         return Scheduler(weather_provider, self.calculator, boiler_controller, config)
 
 
