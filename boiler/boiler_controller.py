@@ -16,7 +16,7 @@ class BoilerController:
     def is_on(self) -> bool:
         with tracer.trace("is boiler on?"):
             _, boiler_on = self.assistant.ask('is boiler on?')
-            metrics.gauge('boiler_on', 1 if boiler_on else 0)
+            metrics.gauge('boiler.boiler_on', 1 if boiler_on else 0)
             return boiler_on
 
     def turn_on(self) -> None:
