@@ -21,7 +21,7 @@ class Calculator:
         avg_temp = sum(data.temperature for data in weather) / len(weather)
         metrics.gauge("calculator.avg_temp", avg_temp, tags={'intencity': intencity})
         needed_temperature = self._needed_temperature(intencity)
-        metrics.gauge("calculator.needed_temperatur", needed_temperature, tags={'intencity': intencity})
+        metrics.gauge("calculator.needed_temperature", needed_temperature, tags={'intencity': intencity})
         needed_energy = self._needed_energy(avg_temp, needed_temperature)
         metrics.gauge("calculator.needed_energy", needed_energy, tags={'intencity': intencity})
         delta_energy = needed_energy - self._sun_output(weather)
