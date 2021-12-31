@@ -2,6 +2,10 @@ import os
 
 from datadog import initialize, statsd
 
+from logger import get_logger
+
+logger = get_logger()
+
 STATS_ENABLED = os.getenv('STATS_ENABLED') == 'True'
 
 
@@ -26,3 +30,4 @@ class Metrics:
     def event(self, title, message, alert_type='success'):
         if STATS_ENABLED:
             statsd.event(title, message, alert_type=alert_type)
+            logger.info(f'DD event: {title}, {message}')

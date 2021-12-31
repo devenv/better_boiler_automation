@@ -44,7 +44,7 @@ if ! cmp requirements.txt ../boiler/requirements.txt >/dev/null 2>&1; then
     exit 2
   fi
 else
-    python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements skipped', alert_type='info')"
+  python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements skipped', alert_type='info')"
 fi
 
 echo "Running tests"
@@ -59,6 +59,7 @@ else
   python -c "from metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
   return 1
 fi
+
 export STATS_ENABLED=True
 
 if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
