@@ -1,8 +1,8 @@
 {
-    "sun_intensity_temperature_min": 15,
+    "sun_intensity_temperature_min": 16,
     "sun_intensity_temperature_max": 35,
     "sun_output_per_day_per_sq_meter_min": 0,
-    "sun_output_per_day_per_sq_meter_max": 5,
+    "sun_output_per_day_per_sq_meter_max": 4,
     "sun_receiving_area_in_sq_meters": 2,
     "boiler_capacity_in_liters": 100,
     "boiler_power_in_amperes": 10,
