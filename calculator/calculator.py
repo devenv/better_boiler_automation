@@ -76,7 +76,7 @@ class Calculator:
             avg_temp = self.config['sun_intensity_temperature_min']
 
         temp_factor = (avg_temp - self.config['sun_intensity_temperature_min']) / (self.config['sun_intensity_temperature_max'] - self.config['sun_intensity_temperature_min'])
-        clouds_factor = 1 - avg_clouds / 100
+        clouds_factor = 1 - avg_clouds / 100 if self.config['clouds_enabled'] else 1
         self._report_gauge("clouds_factor", clouds_factor)
         return temp_factor * clouds_factor
 

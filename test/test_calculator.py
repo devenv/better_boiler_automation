@@ -29,7 +29,6 @@ class TestScheduler(TestCase):
             WeatherData(temperature=15, clouds=100),
             WeatherData(temperature=15, clouds=100),
         ]
-        self.calculator.stop = True
         hours = self.calculator.needed_hours_to_heat(weather, 10)
         self.assertAlmostEqual(hours, 2.12, places=2)
 
@@ -118,3 +117,19 @@ class TestScheduler(TestCase):
         self.calculator.config['boiler_nurfer'] = 0.5
         hours = self.calculator._needed_boiler_time(5)
         self.assertAlmostEqual(hours, 1.135, places=2)
+
+    def test_clouds_enabled(self):
+        weather = [
+            WeatherData(temperature=20, clouds=50),
+            WeatherData(temperature=20, clouds=50),
+            WeatherData(temperature=20, clouds=50),
+            WeatherData(temperature=20, clouds=50),
+        ]
+
+        self.calculator.config['clouds_enabled'] = True
+        hours = self.calculator.needed_hours_to_heat(weather, 10)
+        self.assertAlmostEqual(hours, 1.098, places=2)
+        
+        self.calculator.config['clouds_enabled'] = False
+        hours = self.calculator.needed_hours_to_heat(weather, 10)
+        self.assertAlmostEqual(hours, 0.34, places=2)

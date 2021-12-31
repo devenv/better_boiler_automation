@@ -12,4 +12,5 @@ def calculator_config_override():
         'desired_min_intensity_temperature': 40,
         'boiler_min_heating_time_in_minutes': 15,
         'boiler_nurfer': 1.0,
+        'clouds_enabled': True,
     }
