@@ -2,6 +2,13 @@
 
 {
 
+  send_event () {
+    title=$1
+    text=$2
+    alert_type=$3
+    echo "_e{${#title},${#text}}:$title|$text|#shell|t:$alert_type" | nc -u -w0 127.0.0.1 8125
+  }
+
   export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
   export DD_TRACE_ENABLED=False
   export STATS_ENABLED=True
@@ -15,18 +22,17 @@
   new_last_commit=$(git log --format="%H" -n 1)
   cd ../boiler
   old_last_commit=$(git log --format="%H" -n 1)
+  cd ..
 
   rm -rf better_boiler_automation_configs
   git clone git@github.com:devenv/better_boiler_automation_configs.git
   rsync -avP --exclude=.git better_boiler_automation_configs/ boiler_clone/
 
-  cd boiler_clone
-  python -c "from metrics import Metrics; Metrics().event('deploy', 'started', alert_type='info')"
-  cd ..
+  send_event 'deploy' 'started' 'info'
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
-    python -c "from metrics import Metrics; Metrics().event('deploy', 'skipped', alert_type='info')"
+    send_event 'deploy' 'skipped' 'info'
     exit 0
   fi
 
@@ -39,14 +45,14 @@
     pip3.7 install -r requirements.txt
     if [ $? -eq 0 ]; then
       echo 'requirements installed'
-      python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements installed', alert_type='info')"
+      send_event 'deploy' 'requirements installed' 'info'
     else
       echo 'failed installing requirements'
-      python -c "from metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
+      send_event 'deploy' 'failed installing requirements' 'error'
       exit 2
     fi
   else
-    python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements skipped', alert_type='info')"
+    send_event 'deploy' 'requirements skipped' 'info'
   fi
 
   echo "Running tests"
@@ -54,18 +60,18 @@
   python3.7 -m unittest
   if [ $? -eq 0 ]; then
     echo 'tests passed'
-    python -c "from metrics import Metrics; Metrics().event('deploy', 'tests passed', alert_type='info')"
+    send_event 'deploy' 'tests passed' 'info'
   else
     echo 'tests failed'
     export STATS_ENABLED=True
-    python -c "from metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
+    send_event 'deploy' 'tests failed' 'error'
     return 1
   fi
 
   export STATS_ENABLED=True
 
   if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-    python -c "from metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='info')"
+    send_event 'configuration change' 'calculator' 'info'
   fi
 
   cd ..
@@ -74,8 +80,6 @@
   cp -r boiler_clone boiler
   cp boiler/scripts/* ./
 
-  cd boiler
-  python -c "from metrics import Metrics; Metrics().event('deploy', 'finished', alert_type='success')"
-  cd ..
+  send_event 'deploy' 'finished' 'success'
 
 }
