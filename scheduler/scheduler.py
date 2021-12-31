@@ -41,7 +41,7 @@ class Scheduler:
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
                 metrics.gauge("scheduler.next_hours_needed", hours_to_heat, tags={'intensity': time.intensity})
 
-                eta_on = (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
+                eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
                 eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
                 metrics.gauge("scheduler.eta_on", eta_on, tags={'intensity': time.intensity})
                 metrics.gauge("scheduler.eta_off", eta_off, tags={'intensity': time.intensity})
