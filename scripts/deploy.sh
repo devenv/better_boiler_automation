@@ -59,8 +59,5 @@ cd ..
 
 rm -rf boiler
 cp -r boiler_clone boiler
-cp boiler/scripts/deploy.sh ./
-cp boiler/scripts/run_scheduler.sh ./
-cp boiler/scripts/calendar_sync.sh ./
-cp boiler/scripts/deploy_and_run.sh ./
+cp boiler/scripts/* ./
 python -c "from boiler.metrics import Metrics; Metrics().event('deploy', 'finished', alert_type='success')"
