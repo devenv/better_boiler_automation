@@ -72,7 +72,10 @@
 
   rm -rf boiler
   cp -r boiler_clone boiler
-  python -c "from boiler.metrics import Metrics; Metrics().event('deploy', 'finished', alert_type='success')"
   cp boiler/scripts/* ./
+
+  cd boiler
+  python -c "from metrics import Metrics; Metrics().event('deploy', 'finished', alert_type='success')"
+  cd ..
 
 }
