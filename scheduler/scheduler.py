@@ -66,4 +66,5 @@ class Scheduler:
         now = datetime.now()
         if now < datetime(now.year, now.month, now.day, time.hour, time.minute, 0):
             return datetime(now.year, now.month, now.day, time.hour, time.minute, 0)
-        return datetime(now.year, now.month, now.day + 1, time.hour, time.minute, 0)
+        tomorrow = datetime.now() + timedelta(days=1)
+        return datetime(tomorrow.year, tomorrow.month, tomorrow.day, time.hour, time.minute, 0)
