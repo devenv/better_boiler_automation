@@ -58,18 +58,17 @@ def main():
                     'intensity': int(intensity),
                 })
         file = os.path.join(sys.path[0], "calendar_config.json")
-        if schedule:
-            old_schedule = []
-            try:
-                with open(file, "r") as f:
-                    lines = f.readlines()
-                    old_schedule = json.loads('\n'.join(lines))
-            except:
-                pass
-            if json.dumps(schedule, sort_keys=True) != json.dumps(old_schedule, sort_keys=True):
-                metrics.event("schedule change", "by calendar", alert_type="info")
-                with open(file, "w") as f:
-                    f.write(json.dumps(schedule, indent=4))
+        old_schedule = None
+        try:
+            with open(file, "r") as f:
+                lines = f.readlines()
+                old_schedule = json.loads('\n'.join(lines))
+        except:
+            pass
+        if json.dumps(schedule, sort_keys=True) != json.dumps(old_schedule, sort_keys=True):
+            metrics.event("schedule change", "by calendar", alert_type="info")
+            with open(file, "w") as f:
+                f.write(json.dumps(schedule, indent=4))
         else:
             os.remove(file)
             

@@ -37,7 +37,7 @@ if ! cmp requirements.txt ../boiler/requirements.txt >/dev/null 2>&1; then
     echo 'requirements installed'
   else
     echo 'failed installing requirements'
-    python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
+    python -c "from metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
     exit 2
   fi
 fi
@@ -50,13 +50,13 @@ if [ $? -eq 0 ]; then
 else
   echo 'tests failed'
   export STATS_ENABLED=True
-  python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
+  python -c "from metrics import Metrics; Metrics().event('deploy', 'tests failed', alert_type='error')"
   return 1
 fi
 export STATS_ENABLED=True
 
 if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-  python -c "from boiler_clone.metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='error')"
+  python -c "from metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='error')"
 fi
 
 cd ..
