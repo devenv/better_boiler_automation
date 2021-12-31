@@ -7,3 +7,5 @@ weather_api_key.txt
 my_location.txt
 json.log
 boiler.log
+node_modules
+package-lock.json
