@@ -69,8 +69,6 @@ def main():
             metrics.event("schedule change", "by calendar", alert_type="info")
             with open(file, "w") as f:
                 f.write(json.dumps(schedule, indent=4))
-        else:
-            os.remove(file)
             
     except HttpError as error:
         logger.info('An error occurred: %s' % error)
