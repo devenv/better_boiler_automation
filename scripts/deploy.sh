@@ -14,10 +14,6 @@ new_last_commit=$(git log --format="%H" -n 1)
 cd ../boiler
 old_last_commit=$(git log --format="%H" -n 1)
 cd ..
-if [ "$new_last_commit" = "$old_last_commit" ]; then
-  echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
-  exit 0
-fi
 echo "new commit, deploying: $new_last_commit != $old_last_commit"
 
 python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', 'started', alert_type='info')"
@@ -25,6 +21,11 @@ python -c "from boiler_clone.metrics import Metrics; Metrics().event('deploy', '
 rm -rf better_boiler_automation_configs
 git clone git@github.com:devenv/better_boiler_automation_configs.git
 rsync -avP --exclude=.git better_boiler_automation_configs/ boiler_clone/
+
+if [ "$new_last_commit" = "$old_last_commit" ]; then
+  echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
+  exit 0
+fi
 
 cd boiler_clone
 
