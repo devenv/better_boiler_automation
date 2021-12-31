@@ -31,7 +31,7 @@ class TestScheduler(TestCase):
         ]
         self.calculator.stop = True
         hours = self.calculator.needed_hours_to_heat(weather, 10)
-        self.assertAlmostEquals(hours, 2.12, places=2)
+        self.assertAlmostEqual(hours, 2.12, places=2)
 
     def test_needed_hours_to_heat_full_low_intensity(self):
         weather = [
@@ -41,7 +41,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=15, clouds=100),
         ]
         hours = self.calculator.needed_hours_to_heat(weather, 0)
-        self.assertAlmostEquals(hours, 1.325, places=2)
+        self.assertAlmostEqual(hours, 1.325, places=2)
 
     def test_needed_hours_to_heat_some_sun(self):
         weather = [
@@ -51,7 +51,7 @@ class TestScheduler(TestCase):
             WeatherData(temperature=20, clouds=20),
         ]
         hours = self.calculator.needed_hours_to_heat(weather, 10)
-        self.assertAlmostEquals(hours, 0.64, places=2)
+        self.assertAlmostEqual(hours, 0.64, places=2)
 
     def test_sun_intensity(self):
         weather = [
@@ -104,7 +104,7 @@ class TestScheduler(TestCase):
 
     def test_needed_boiler_time(self):
         hours = self.calculator._needed_boiler_time(5)
-        self.assertAlmostEquals(hours, 2.27, places=2)
+        self.assertAlmostEqual(hours, 2.27, places=2)
 
     def test_needed_boiler_time_min_hours(self):
         hours = self.calculator._needed_boiler_time(0.1)
@@ -117,4 +117,4 @@ class TestScheduler(TestCase):
     def test_needed_boiler_time_with_nurfer(self):
         self.calculator.config['boiler_nurfer'] = 0.5
         hours = self.calculator._needed_boiler_time(5)
-        self.assertAlmostEquals(hours, 1.135, places=2)
+        self.assertAlmostEqual(hours, 1.135, places=2)
