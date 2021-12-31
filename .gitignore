@@ -6,6 +6,6 @@ assistant/device_config.json
 node_modules
 package-lock.json
 scheduler/credentials.json
-token.json
+scheduler/token.json
 weather/my_location.txt
 weather/weather_api_key.txt
