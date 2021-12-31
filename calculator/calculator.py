@@ -48,9 +48,12 @@ class Calculator:
 
         return hours_needed
 
-    def _report_gauge(self, name, value, intensity):
+    def _report_gauge(self, name, value, intensity=None):
         if self.report_metrics:
-            metrics.gauge(f"calculator.{name}", value, tags={'intensity': intensity})
+            if intensity is None:
+                metrics.gauge(f"calculator.{name}", value)
+            else:
+                metrics.gauge(f"calculator.{name}", value, tags={'intensity': intensity})
 
     def _needed_temperature(self, intensity: int) -> float:
         return self.config['desired_min_intensity_temperature'] + intensity / 10 * (self.config['desired_max_intensity_temperature'] - self.config['desired_min_intensity_temperature'])
@@ -74,6 +77,7 @@ class Calculator:
 
         temp_factor = (avg_temp - self.config['sun_intensity_temperature_min']) / (self.config['sun_intensity_temperature_max'] - self.config['sun_intensity_temperature_min'])
         clouds_factor = 1 - avg_clouds / 100
+        self._report_gauge("clouds_factor", clouds_factor)
         return temp_factor * clouds_factor
 
     def _needed_boiler_time(self, needed_energy: float) -> float:
