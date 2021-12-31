@@ -55,6 +55,10 @@ else
 fi
 export STATS_ENABLED=True
 
+if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
+  python -c "from boiler_clone.metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='error')"
+fi
+
 cd ..
 
 rm -rf boiler

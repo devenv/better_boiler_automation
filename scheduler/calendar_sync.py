@@ -10,6 +10,12 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from logger import get_logger
+from metrics import Metrics
+
+logger = get_logger()
+metrics = Metrics()
+
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 CREDENTIALS_FILE = os.path.join(sys.path[0], "credentials.json")
 TOKEN_FILE = os.path.join(sys.path[0], "token.json")
@@ -37,7 +43,7 @@ def main():
         events = events_result.get('items', [])
 
         if not events:
-            print('No upcoming events found.')
+            logger.info('No upcoming events found.')
             return
 
         schedule = []
@@ -53,14 +59,22 @@ def main():
                 })
         file = os.path.join(sys.path[0], "calendar_config.json")
         if schedule:
-            with open(file, "w") as f:
-                f.write(json.dumps(schedule, indent=4))
+            old_schedule = []
+            try:
+                with open(file, "r") as f:
+                    lines = f.readlines()
+                    old_schedule = json.loads('\n'.join(lines))
+            except:
+                pass
+            if json.dumps(schedule, sort_keys=True) != json.dumps(old_schedule, sort_keys=True):
+                metrics.event("schedule change", "by calendar", alert_type="info")
+                with open(file, "w") as f:
+                    f.write(json.dumps(schedule, indent=4))
         else:
             os.remove(file)
             
-
     except HttpError as error:
-        print('An error occurred: %s' % error)
+        logger.info('An error occurred: %s' % error)
 
 
 if __name__ == '__main__':
