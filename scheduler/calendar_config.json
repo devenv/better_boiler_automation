@@ -1,0 +1,22 @@
+[
+    {
+        "hour": 21,
+        "minute": 15,
+        "intensity": 6
+    },
+    {
+        "hour": 0,
+        "minute": 0,
+        "intensity": 4
+    },
+    {
+        "hour": 8,
+        "minute": 30,
+        "intensity": 6
+    },
+    {
+        "hour": 10,
+        "minute": 30,
+        "intensity": 4
+    }
+]

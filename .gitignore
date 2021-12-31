@@ -5,7 +5,6 @@ assistant/client_secret.json
 assistant/device_config.json
 node_modules
 package-lock.json
-scheduler/calendar_config.json
 scheduler/credentials.json
 token.json
 weather/my_location.txt
