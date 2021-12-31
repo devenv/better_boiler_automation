@@ -24,6 +24,7 @@ rsync -avP --exclude=.git better_boiler_automation_configs/ boiler_clone/
 
 if [ "$new_last_commit" = "$old_last_commit" ]; then
   echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
+  python -c "from metrics import Metrics; Metrics().event('deploy', 'skipped', alert_type='info')"
   exit 0
 fi
 
@@ -36,11 +37,14 @@ if ! cmp requirements.txt ../boiler/requirements.txt >/dev/null 2>&1; then
   pip3.7 install -r requirements.txt
   if [ $? -eq 0 ]; then
     echo 'requirements installed'
+    python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements installed', alert_type='info')"
   else
     echo 'failed installing requirements'
     python -c "from metrics import Metrics; Metrics().event('deploy', 'failed installing requirements', alert_type='error')"
     exit 2
   fi
+else
+    python -c "from metrics import Metrics; Metrics().event('deploy', 'requirements skipped', alert_type='info')"
 fi
 
 echo "Running tests"
@@ -48,6 +52,7 @@ export STATS_ENABLED=False
 python3.7 -m unittest
 if [ $? -eq 0 ]; then
   echo 'tests passed'
+  python -c "from metrics import Metrics; Metrics().event('deploy', 'tests passed', alert_type='info')"
 else
   echo 'tests failed'
   export STATS_ENABLED=True
@@ -57,7 +62,7 @@ fi
 export STATS_ENABLED=True
 
 if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-  python -c "from metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='error')"
+  python -c "from metrics import Metrics; Metrics().event('configuration change', 'calculator', alert_type='info')"
 fi
 
 cd ..
