@@ -52,8 +52,8 @@ class WeatherProvider:
 
             results = [current_weather]
 
-            for i in range(1, self.HOURS_TO_LOOK_BACK):
-                weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
+            for i in range(2, self.HOURS_TO_LOOK_BACK + 1):
+                weather = self.weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.now() - timedelta(hours=i))).current)
                 results.append(weather)
                 metrics.gauge("previous_weather.temperature", weather.temperature, tags={'hours_ago': str(i)})
                 metrics.gauge("previous_weather.clouds", weather.clouds, tags={'hours_ago': str(i)})
