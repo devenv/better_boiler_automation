@@ -11,8 +11,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-CREDENTIALS_FILE = os.path.join(sys.path[0], "scheduler/credentials.json")
-TOKEN_FILE = os.path.join(sys.path[0], "scheduler/token.json")
+CREDENTIALS_FILE = os.path.join(sys.path[0], "credentials.json")
+TOKEN_FILE = os.path.join(sys.path[0], "token.json")
 
 
 def main():
