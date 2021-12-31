@@ -4,6 +4,11 @@ import os
 import sys
 
 def load_config():
+    try:
+        with open(os.path.join(sys.path[0], "scheduler/calendar_config.json"), "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        pass
     with open(os.path.join(sys.path[0], "scheduler/scheduler_config.json"), "r") as f:
         return json.load(f)
 

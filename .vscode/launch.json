@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "run.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Calendar Sync",
+            "type": "python",
+            "request": "launch",
+            "program": "scheduler/calendar_sync.py",
+            "console": "integratedTerminal"
         }
     ]
 }
