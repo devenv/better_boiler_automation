@@ -34,17 +34,17 @@ class Scheduler:
                 self.calculator.calculate_for_all_intensities(weather)
 
                 time = self._get_next_schedule()
-                metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60)
-                metrics.gauge("scheduler.next_intensity", time.intensity)
-                metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity))
+                metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60, tags={'intensity': time.intensity})
+                metrics.gauge("scheduler.next_intensity", time.intensity, tags={'intensity': time.intensity})
+                metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity), tags={'intensity': time.intensity})
 
                 hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
-                metrics.gauge("scheduler.next_hours_needed", hours_to_heat)
+                metrics.gauge("scheduler.next_hours_needed", hours_to_heat, tags={'intensity': time.intensity})
 
                 eta_on = (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
                 eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
-                metrics.gauge("scheduler.eta_on", eta_on)
-                metrics.gauge("scheduler.eta_off", eta_off)
+                metrics.gauge("scheduler.eta_on", eta_on, tags={'intensity': time.intensity})
+                metrics.gauge("scheduler.eta_off", eta_off, tags={'intensity': time.intensity})
 
                 if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
                     if not is_on:
