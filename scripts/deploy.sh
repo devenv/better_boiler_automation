@@ -6,7 +6,7 @@
     title=$1
     text=$2
     alert_type=$3
-    echo "_e{${#title},${#text}}:$title|$text|#shell|t:$alert_type" | nc -u -w0 127.0.0.1 8125
+    echo "_e{${#title},${#text}}:$title|$text|#shell|t:$alert_type" | socat -t 0 - UDP:localhost:8125
   }
 
   export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
