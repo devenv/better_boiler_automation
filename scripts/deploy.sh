@@ -17,6 +17,7 @@
 
   rm -rf boiler_clone
   git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
+  cp boiler/scheduler/calenard_config.json boiler_clone/scheduler/
 
   cd boiler_clone
   new_last_commit=$(git log --format="%H" -n 1)
