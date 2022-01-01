@@ -9,14 +9,22 @@
             "type": "python",
             "request": "launch",
             "program": "run.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         },
         {
             "name": "Calendar Sync",
             "type": "python",
             "request": "launch",
             "program": "scheduler/calendar_sync.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ]
 }

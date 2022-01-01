@@ -3,12 +3,14 @@ from datetime import timedelta
 import json
 import os
 import sys
+from typing import List
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from scheduler.scheduler_config import Time
 
 from logger import get_logger
 from metrics import Metrics
@@ -20,6 +22,15 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 CREDENTIALS_FILE = os.path.join(sys.path[0], "credentials.json")
 TOKEN_FILE = os.path.join(sys.path[0], "token.json")
 
+def get_schedule(events) -> List[Time]:
+    schedule = []
+    for event in events:
+        start = datetime.fromisoformat(event['start'].get('dateTime', event['start'].get('date')))
+        summary = event['summary']
+        if "Boiler intensity:" in summary:
+            intensity = summary.split('intensity:')[1]
+            schedule.append(Time(start.hour, start.minute, int(intensity)))
+    return schedule
 
 def main():
     creds = None
@@ -46,17 +57,7 @@ def main():
             logger.info('No upcoming events found.')
             return
 
-        schedule = []
-        for event in events:
-            start = datetime.fromisoformat(event['start'].get('dateTime', event['start'].get('date')))
-            summary = event['summary']
-            if "Boiler intensity:" in summary:
-                intensity = summary.split('intensity:')[1]
-                schedule.append({
-                    'hour': int(start.hour),
-                    'minute': int(start.minute),
-                    'intensity': int(intensity),
-                })
+        schedule = get_schedule(events)
         file = os.path.join(sys.path[0], "calendar_config.json")
         old_schedule = None
         try:

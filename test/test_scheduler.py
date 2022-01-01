@@ -6,6 +6,7 @@ from freezegun import freeze_time
 from scheduler.scheduler_config import SchedulerConfig, Time
 
 from calculator.calculator import Calculator
+from scheduler import calendar_sync
 from scheduler.scheduler import Scheduler
 from scheduler.scheduler_config import Time
 from weather.weather_provider import WeatherData
@@ -97,6 +98,16 @@ class TestScheduler(TestCase):
     def test_find_next_hour_easy(self):
         scheduler = Scheduler(None, None, None, None)
         self.assertEqual(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
+    
+    def test_calendar_sync_output_format(self):
+        magic_start = MagicMock()
+        magic_start.get = MagicMock(return_value='2022-01-01T08:30:00.000000')
+        events = [{
+            'start': magic_start,
+            'summary': 'Boiler intensity:10',
+        }]
+        result = calendar_sync.get_schedule(events)
+        self.assertEqual(result, [Time(8, 30, 10)])
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_with_jump(self):
