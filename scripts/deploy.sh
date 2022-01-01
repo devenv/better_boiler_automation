@@ -29,13 +29,13 @@
   git clone git@github.com:devenv/better_boiler_automation_configs.git
   rsync -avP --exclude=.git better_boiler_automation_configs/ boiler_clone/
 
-  send_event 'deploy' 'started' 'info'
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
-    send_event 'deploy' 'skipped' 'info'
+    send_event 'skipped' 'skipped' 'info'
     exit 0
   fi
+  send_event 'deploy' 'started' 'info'
 
   cd boiler_clone
 
