@@ -98,6 +98,11 @@ class TestScheduler(TestCase):
     def test_find_next_hour_easy(self):
         scheduler = Scheduler(None, None, None, None)
         self.assertEqual(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
+
+    @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
+    def test_find_next_hour_with_jump(self):
+        scheduler = Scheduler(None, None, None, None)
+        self.assertEqual(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
     
     def test_calendar_sync_output_format(self):
         magic_start = MagicMock()
@@ -108,11 +113,6 @@ class TestScheduler(TestCase):
         }]
         result = calendar_sync.get_schedule(events)
         self.assertEqual(result, [Time(8, 30, 10)])
-
-    @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
-    def test_find_next_hour_with_jump(self):
-        scheduler = Scheduler(None, None, None, None)
-        self.assertEqual(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
 
     def _run_simulation(self, weather_data, times):
         weather_provider = MagicMock()
