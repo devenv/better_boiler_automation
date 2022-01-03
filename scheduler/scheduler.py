@@ -49,6 +49,7 @@ class Scheduler:
                 if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
                     if not is_on:
                         logger.info(f"Switching on for hour {self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE)}:{time.minute} to heat {hours_to_heat:.2f}")
+                        metrics.gauge("scheduler.hours_heating", hours_to_heat, tags={'intensity': time.intensity})
                         self.boiler_controller.turn_on()
                 elif is_on:
                     self.boiler_controller.turn_off()
