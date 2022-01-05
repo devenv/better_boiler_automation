@@ -11,5 +11,5 @@
     "boiler_nurfer": 0.9,
     "desired_max_intensity_temperature": 55,
     "desired_min_intensity_temperature": 30,
-    "clouds_enabled": true
+    "clouds_enabled": false
 }
