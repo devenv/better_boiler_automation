@@ -80,11 +80,10 @@ class Assistant(object):
             req = embedded_assistant_pb2.AssistRequest(config=config)
             yield req
 
-        boiler_on = BoilerState.UNKNOWN
         for resp in self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE):
             audio_data = resp.audio_out.audio_data
             if hashlib.md5(audio_data).hexdigest() == 'b68beb589c2104308994c3afe42073dd':
-                boiler_on = BoilerState.ON
+                return BoilerState.ON
             if hashlib.md5(audio_data).hexdigest() == 'd41d8cd98f00b204e9800998ecf8427e':
-                boiler_on = BoilerState.OFF
-        return boiler_on
+                return BoilerState.OFF
+        return BoilerState.UNKNOWN
