@@ -37,7 +37,7 @@ class WeatherProvider:
     api_key = load_api_key()
     location = load_location()
 
-    HOURS_TO_LOOK_BACK = 6
+    HOURS_TO_LOOK_BACK = 8
 
     def get_weather_data(self) -> List[WeatherData]:
         with tracer.trace("get weather"):
