@@ -19,7 +19,7 @@
             "name": "Calendar Sync",
             "type": "python",
             "request": "launch",
-            "program": "scheduler/calendar_sync.py",
+            "program": "run_calendar_sync.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {

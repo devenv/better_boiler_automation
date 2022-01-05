@@ -7,7 +7,7 @@ from boiler.boiler_controller import UnknownBoilerState
 from scheduler.scheduler_config import SchedulerConfig, Time
 
 from calculator.calculator import Calculator
-from scheduler import calendar_sync
+from scheduler.calendar_sync import CalendarSync
 from scheduler.scheduler import MAX_CONFUSION, Scheduler
 from scheduler.scheduler_config import Time
 from weather.weather_provider import WeatherData
@@ -128,7 +128,7 @@ class TestScheduler(TestCase):
             'start': magic_start,
             'summary': 'Boiler intensity:10',
         }]
-        result = calendar_sync.get_schedule(events)
+        result = CalendarSync().get_schedule(events)
         self.assertEqual(result, [Time(8, 30, 10)])
 
     def _run_simulation(self, weather_data, times):

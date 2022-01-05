@@ -9,4 +9,4 @@ export STATS_ENABLED=True
 export DD_SERVICE=scheduler
 
 #ddtrace-run python3.7 run.py
-python3.7 scheduler/calendar_sync.py
+python3.7 run_calendar_sync.py
