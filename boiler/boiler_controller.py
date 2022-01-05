@@ -20,16 +20,16 @@ class BoilerController:
     def is_on(self) -> bool:
         with tracer.trace("is boiler on?"):
             state = self.assistant.ask('is boiler on?')
-            match state:
-                case BoilerState.ON:
-                    metrics.gauge('boiler.boiler_on', 1)
-                    return True
-                case BoilerState.OFF:
-                    metrics.gauge('boiler.boiler_on', 0)
-                    return False
-                case BoilerState.UNKNOWN:
-                    metrics.event('boiler state unknown', 'assistant is confused')
-                    raise UnknownBoilerState("Assistant is confused")
+            if state == BoilerState.ON:
+                metrics.gauge('boiler.boiler_on', 1)
+                return True
+            if state == BoilerState.OFF:
+                metrics.gauge('boiler.boiler_on', 0)
+                return False
+            if state == BoilerState.UNKNOWN:
+                metrics.event('boiler state unknown', 'assistant is confused')
+                raise UnknownBoilerState("Assistant is confused")
+        raise Exception('Waaat?')
 
     def turn_on(self) -> None:
         with tracer.trace("turn boiler on"):
