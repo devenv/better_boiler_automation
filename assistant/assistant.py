@@ -19,7 +19,7 @@ def load_config():
     with open(os.path.join(sys.path[0], "assistant/device_config.json"), "r") as f:
         return json.load(f)
 
-    
+
 class Assistant(object):
 
     config = load_config()
@@ -71,4 +71,5 @@ class Assistant(object):
             req = embedded_assistant_pb2.AssistRequest(config=config)
             yield req
 
-        self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE)
+        return list(self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE))
+        

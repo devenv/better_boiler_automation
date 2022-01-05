@@ -42,7 +42,7 @@ class BoilerController:
     def load_state(self) -> bool:
         try:
             with open(os.path.join(sys.path[0], "boiler/last_state.txt"), "r") as f:
-                return True if f.read() == "1" else False
+                return True if f.read().strip() == "1" else False
         except:
             return False
 
