@@ -3,6 +3,7 @@
 __pycache__
 assistant/client_secret.json
 assistant/device_config.json
+boiler/last_state.txt
 node_modules
 package-lock.json
 scheduler/credentials.json

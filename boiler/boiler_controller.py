@@ -1,6 +1,9 @@
 from ddtrace import tracer
+import json
+import os
+import sys
 
-from assistant.assistant import Assistant, BoilerState
+from assistant.assistant import Assistant
 
 from logger import get_logger
 from metrics import Metrics
@@ -18,22 +21,12 @@ class BoilerController:
     assistant = Assistant()
 
     def is_on(self) -> bool:
-        with tracer.trace("is boiler on?"):
-            state = self.assistant.ask('is boiler on?')
-            if state == BoilerState.ON:
-                metrics.gauge('boiler.boiler_on', 1)
-                return True
-            if state == BoilerState.OFF:
-                metrics.gauge('boiler.boiler_on', 0)
-                return False
-            if state == BoilerState.UNKNOWN:
-                metrics.event('boiler state unknown', 'assistant is confused')
-                raise UnknownBoilerState("Assistant is confused")
-        raise Exception('Waaat?')
+        return self.load_state()
 
     def turn_on(self) -> None:
         with tracer.trace("turn boiler on"):
             self.assistant.ask('turn boiler on')
+            self.save_state(True)
             self._broadcast('Turning boiler on')
             metrics.event('boiler state', 'boiler heating', alert_type='info')
             metrics.gauge('boiler.boiler_on', 1)
@@ -41,9 +34,21 @@ class BoilerController:
     def turn_off(self) -> None:
         with tracer.trace("turn boiler off"):
             self.assistant.ask('turn boiler off')
+            self.save_state(False)
             self._broadcast('Turning boiler off')
             metrics.event('boiler state', 'boiler off', alert_type='info')
             metrics.gauge('boiler.boiler_on', 0)
+
+    def load_state(self) -> bool:
+        try:
+            with open(os.path.join(sys.path[0], "boiler/last_state.txt"), "r") as f:
+                return True if f.read() == "1" else False
+        except:
+            return False
+
+    def save_state(self, state: bool):
+        with open(os.path.join(sys.path[0], "boiler/last_state.txt"), "w") as f:
+            return f.write("1" if state else "0")
 
     def _broadcast(self, message: str) -> None:
         with tracer.trace("broadcast"):

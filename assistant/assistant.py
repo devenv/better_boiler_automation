@@ -1,9 +1,6 @@
-from enum import Enum
-import hashlib
 import json
 import os
 import sys
-from typing import Tuple
 
 import click
 import google.auth.transport.grpc
@@ -21,12 +18,6 @@ DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 def load_config():
     with open(os.path.join(sys.path[0], "assistant/device_config.json"), "r") as f:
         return json.load(f)
-
-
-class BoilerState(Enum):
-    ON = 'on'
-    OFF = 'off'
-    UNKNOWN = 'unknown'
 
     
 class Assistant(object):
@@ -57,7 +48,7 @@ class Assistant(object):
         if e:
             return False
 
-    def ask(self, text_query: str) -> BoilerState:
+    def ask(self, text_query: str):
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(
                 audio_out_config=embedded_assistant_pb2.AudioOutConfig(
@@ -80,10 +71,4 @@ class Assistant(object):
             req = embedded_assistant_pb2.AssistRequest(config=config)
             yield req
 
-        for resp in self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE):
-            audio_data = resp.audio_out.audio_data
-            if hashlib.md5(audio_data).hexdigest() == 'b68beb589c2104308994c3afe42073dd':
-                return BoilerState.ON
-            if hashlib.md5(audio_data).hexdigest() == 'd41d8cd98f00b204e9800998ecf8427e':
-                return BoilerState.OFF
-        return BoilerState.UNKNOWN
+        self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE)
