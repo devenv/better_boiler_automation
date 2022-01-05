@@ -1,3 +1,4 @@
+from enum import Enum
 import hashlib
 import json
 import os
@@ -22,6 +23,12 @@ def load_config():
         return json.load(f)
 
 
+class BoilerState(Enum):
+    ON = 'on'
+    OFF = 'off'
+    UNKNOWN = 'unknown'
+
+    
 class Assistant(object):
 
     config = load_config()
@@ -50,7 +57,7 @@ class Assistant(object):
         if e:
             return False
 
-    def ask(self, text_query: str) -> Tuple[str, bool]:
+    def ask(self, text_query: str) -> BoilerState:
         def iter_assist_requests():
             config = embedded_assistant_pb2.AssistConfig(
                 audio_out_config=embedded_assistant_pb2.AudioOutConfig(
@@ -73,12 +80,11 @@ class Assistant(object):
             req = embedded_assistant_pb2.AssistRequest(config=config)
             yield req
 
-        text_response = None
-        boiler_on = False
+        boiler_on = BoilerState.UNKNOWN
         for resp in self.assistant.Assist(iter_assist_requests(), DEFAULT_GRPC_DEADLINE):
             audio_data = resp.audio_out.audio_data
             if hashlib.md5(audio_data).hexdigest() == 'b68beb589c2104308994c3afe42073dd':
-                boiler_on = True
-            if resp.dialog_state_out.supplemental_display_text:
-                text_response = resp.dialog_state_out.supplemental_display_text
-        return text_response, boiler_on
+                boiler_on = BoilerState.ON
+            if hashlib.md5(audio_data).hexdigest() == 'd41d8cd98f00b204e9800998ecf8427e':
+                boiler_on = BoilerState.OFF
+        return boiler_on

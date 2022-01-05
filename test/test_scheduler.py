@@ -3,11 +3,12 @@ from unittest.mock import MagicMock
 
 from datetime import datetime
 from freezegun import freeze_time
+from boiler.boiler_controller import UnknownBoilerState
 from scheduler.scheduler_config import SchedulerConfig, Time
 
 from calculator.calculator import Calculator
 from scheduler import calendar_sync
-from scheduler.scheduler import Scheduler
+from scheduler.scheduler import MAX_CONFUSION, Scheduler
 from scheduler.scheduler_config import Time
 from weather.weather_provider import WeatherData
 
@@ -94,6 +95,22 @@ class TestScheduler(TestCase):
         self.assertEqual(next_schedule.hour, 1)
         self.assertEqual(next_schedule.minute, 0)
 
+    @freeze_time(datetime(2021, 1, 1, 23, 0, 0))
+    def test_scheduler_confused_assistant(self):
+        boiler_controller = BoilerControllerSpy(confused_amount=999)
+
+        self.assertRaises(UnknownBoilerState, lambda: self._get_scheduler(3.5, boiler_controller, [1]).check())
+        self.assertEqual(boiler_controller.turned_on, 0)
+        self.assertEqual(boiler_controller.turned_off, 0)
+
+    @freeze_time(datetime(2021, 1, 1, 23, 0, 0))
+    def test_scheduler_confused_assistant_recovered(self):
+        boiler_controller = BoilerControllerSpy(confused_amount=MAX_CONFUSION - 1)
+
+        self._get_scheduler(3.5, boiler_controller, [1]).check()
+        self.assertEqual(boiler_controller.turned_on, 1)
+        self.assertEqual(boiler_controller.turned_off, 0)
+
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_easy(self):
         scheduler = Scheduler(None, None, None, None)
@@ -142,11 +159,12 @@ class TestScheduler(TestCase):
 
 class BoilerControllerSpy:
 
-    def __init__(self, is_on):
+    def __init__(self, is_on=False, confused_amount=False):
         self.turned_on = 0
         self.turned_off = 0
         self.is_onned = 0
         self._is_on = is_on
+        self._confused_amount = confused_amount
         self.turned_on_times = []
         self.turned_off_times = []
 
@@ -162,4 +180,7 @@ class BoilerControllerSpy:
 
     def is_on(self):
         self.is_onned += 1
+        if self._confused_amount > 0:
+            self._confused_amount -= 1
+            raise UnknownBoilerState("Assistant is confused")
         return self._is_on

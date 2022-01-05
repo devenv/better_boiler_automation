@@ -1,6 +1,6 @@
 from ddtrace import tracer
 
-from assistant.assistant import Assistant
+from assistant.assistant import Assistant, BoilerState
 
 from logger import get_logger
 from metrics import Metrics
@@ -9,15 +9,27 @@ logger = get_logger()
 metrics = Metrics()
 
 
+class UnknownBoilerState(Exception):
+    pass
+
+
 class BoilerController:
 
     assistant = Assistant()
 
     def is_on(self) -> bool:
         with tracer.trace("is boiler on?"):
-            _, boiler_on = self.assistant.ask('is boiler on?')
-            metrics.gauge('boiler.boiler_on', 1 if boiler_on else 0)
-            return boiler_on
+            state = self.assistant.ask('is boiler on?')
+            match state:
+                case BoilerState.ON:
+                    metrics.gauge('boiler.boiler_on', 1)
+                    return True
+                case BoilerState.OFF:
+                    metrics.gauge('boiler.boiler_on', 0)
+                    return False
+                case BoilerState.UNKNOWN:
+                    metrics.event('boiler state unknown', 'assistant is confused')
+                    raise UnknownBoilerState("Assistant is confused")
 
     def turn_on(self) -> None:
         with tracer.trace("turn boiler on"):
