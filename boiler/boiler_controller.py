@@ -18,7 +18,7 @@ class BoilerController:
         return self.switcher.is_on()
 
     def turn_on(self) -> None:
-        self.switcher.turn_off()
+        self.switcher.turn_on()
         self._broadcast('Turning boiler on')
         metrics.event('boiler state', 'boiler heating', alert_type='info')
         metrics.gauge('boiler.boiler_on', 1)
