@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from boiler.boiler_controller import BoilerController, UnknownBoilerState
+from boiler.boiler_controller import BoilerController
 from calculator.calculator import Calculator
 from scheduler.scheduler_config import SchedulerConfig, Time
 from weather.weather_provider import WeatherProvider, WeatherData
@@ -11,8 +11,6 @@ from metrics import Metrics
 
 logger = get_logger()
 metrics = Metrics()
-
-MAX_CONFUSION = 4
 
 
 class Scheduler:
@@ -27,18 +25,7 @@ class Scheduler:
         metrics.gauge("scheduler.schedules_loaded", len(self.config.times))
         now = datetime.now()
         weather: List[WeatherData] = self.weather_provider.get_weather_data()
-        unknown = True
-        n = 0
-        while unknown and n < MAX_CONFUSION:
-            try:
-                is_on = self.boiler_controller.is_on()
-                unknown = False
-            except UnknownBoilerState:
-                n += 1
-        if unknown:
-            print("Assistant is confused")
-            metrics.event("could not read boiler state", 'assistant is confused')
-            raise UnknownBoilerState("Assistant is really confused")
+        is_on = self.boiler_controller.is_on()
 
         self.calculator.calculate_for_all_intensities(weather)
 

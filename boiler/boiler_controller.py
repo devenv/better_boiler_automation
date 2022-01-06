@@ -8,10 +8,6 @@ logger = get_logger()
 metrics = Metrics()
 
 
-class UnknownBoilerState(Exception):
-    pass
-
-
 class BoilerController:
 
     assistant = Assistant()
