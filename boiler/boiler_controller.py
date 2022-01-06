@@ -10,8 +10,9 @@ metrics = Metrics()
 
 class BoilerController:
 
-    assistant = Assistant()
-    switcher = Switcher()
+    def __init__(self):
+        self.assistant = Assistant()
+        self.switcher = Switcher()
 
     def is_on(self) -> bool:
         return self.switcher.is_on()
