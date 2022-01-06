@@ -1,6 +1,7 @@
 *.log
 .pytest_cache
 __pycache__
+assistant/assistant.py
 assistant/client_secret.json
 assistant/device_config.json
 boiler/last_state.txt
@@ -8,5 +9,7 @@ node_modules
 package-lock.json
 scheduler/credentials.json
 scheduler/token.json
+switcher/switcher_config.json
+switcher_test.py
 weather/my_location.txt
 weather/weather_api_key.txt

@@ -25,6 +25,17 @@
             "env": {
                 "PYTHONPATH": "${cwd}"
             }
+        },
+        {
+            "name": "Switcher test",
+            "type": "python",
+            "request": "launch",
+            "program": "switcher_test.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ]
 }

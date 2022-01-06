@@ -17,9 +17,9 @@ class Time:
 class SchedulerConfig:
 
     TIME_ZONE = 2
-    config = load_config()
 
     def __init__(self):
+        self.config = load_config()
         self.times = [Time(self.cull_to_real_hour(item['hour'] - self.TIME_ZONE), item['minute'], item['intensity']) for item in self.config]
 
     def cull_to_real_hour(self, hour):

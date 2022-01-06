@@ -18,8 +18,10 @@ def load_config():
 
 class Calculator:
 
-    config = load_config()
     report_metrics: bool = False
+
+    def __init__(self):
+        self.config = load_config()
 
     def calculate_for_all_intensities(self, weather: List[WeatherData]):
         self.report_metrics = True

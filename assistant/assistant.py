@@ -22,9 +22,8 @@ def load_config():
 
 class Assistant(object):
 
-    config = load_config()
-
     def __init__(self):
+        self.config = load_config()
         self.device_model_id = self.config['device_model_id']
         self.device_id = self.config['device_id']
 
