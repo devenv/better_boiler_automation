@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from ddtrace import tracer
 from typing import List
 
 from boiler.boiler_controller import BoilerController, UnknownBoilerState
@@ -26,46 +25,43 @@ class Scheduler:
 
     def check(self) -> None:
         metrics.gauge("scheduler.schedules_loaded", len(self.config.times))
-        with tracer.trace("scheduler check"):
-            now = datetime.now()
-            weather: List[WeatherData] = self.weather_provider.get_weather_data()
-            unknown = True
-            n = 0
-            while unknown and n < MAX_CONFUSION:
-                try:
-                    is_on = self.boiler_controller.is_on()
-                    unknown = False
-                except UnknownBoilerState:
-                    n += 1
-            if unknown:
-                print("Assistant is confused")
-                metrics.event("could not read boiler state", 'assistant is confused')
-                raise UnknownBoilerState("Assistant is really confused")
+        now = datetime.now()
+        weather: List[WeatherData] = self.weather_provider.get_weather_data()
+        unknown = True
+        n = 0
+        while unknown and n < MAX_CONFUSION:
+            try:
+                is_on = self.boiler_controller.is_on()
+                unknown = False
+            except UnknownBoilerState:
+                n += 1
+        if unknown:
+            print("Assistant is confused")
+            metrics.event("could not read boiler state", 'assistant is confused')
+            raise UnknownBoilerState("Assistant is really confused")
 
-            with tracer.trace("schedule calculation"):
+        self.calculator.calculate_for_all_intensities(weather)
 
-                self.calculator.calculate_for_all_intensities(weather)
+        time = self._get_next_schedule()
+        metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60, tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.next_intensity", time.intensity, tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity), tags={'intensity': time.intensity})
 
-                time = self._get_next_schedule()
-                metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60, tags={'intensity': time.intensity})
-                metrics.gauge("scheduler.next_intensity", time.intensity, tags={'intensity': time.intensity})
-                metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity), tags={'intensity': time.intensity})
+        hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
+        metrics.gauge("scheduler.next_hours_needed", hours_to_heat, tags={'intensity': time.intensity})
 
-                hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
-                metrics.gauge("scheduler.next_hours_needed", hours_to_heat, tags={'intensity': time.intensity})
+        eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
+        eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
+        metrics.gauge("scheduler.eta_on", eta_on, tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.eta_off", eta_off, tags={'intensity': time.intensity})
 
-                eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
-                eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
-                metrics.gauge("scheduler.eta_on", eta_on, tags={'intensity': time.intensity})
-                metrics.gauge("scheduler.eta_off", eta_off, tags={'intensity': time.intensity})
-
-                if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
-                    if not is_on:
-                        logger.info(f"Switching on for hour {self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE)}:{time.minute} to heat {hours_to_heat:.2f}")
-                        metrics.gauge("scheduler.hours_heating", hours_to_heat, tags={'intensity': time.intensity})
-                        self.boiler_controller.turn_on()
-                elif is_on:
-                    self.boiler_controller.turn_off()
+        if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
+            if not is_on:
+                logger.info(f"Switching on for hour {self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE)}:{time.minute} to heat {hours_to_heat:.2f}")
+                metrics.gauge("scheduler.hours_heating", hours_to_heat, tags={'intensity': time.intensity})
+                self.boiler_controller.turn_on()
+        elif is_on:
+            self.boiler_controller.turn_off()
 
     def _get_next_schedule(self) -> Time:
         now = datetime.now()

@@ -1,5 +1,5 @@
-aioswitcher==2.0.7
-ddtrace==0.57.0
+aioswitcher==1.2.5
+datadog==0.43.0
 freezegun==1.1.0
 google-api-python-client==2.33.0
 google-assistant-grpc==0.2.1

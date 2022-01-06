@@ -13,3 +13,4 @@ switcher/switcher_config.json
 switcher_test.py
 weather/my_location.txt
 weather/weather_api_key.txt
+venv
