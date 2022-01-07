@@ -43,6 +43,7 @@ class CalendarSync:
         return schedule
 
     def run(self):
+        metrics.incr("calendar_sync.start")
         creds = None
         if os.path.exists(TOKEN_FILE):
             creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
@@ -82,7 +83,10 @@ class CalendarSync:
                     f.write(json.dumps(schedule, indent=4, cls=EnhancedJSONEncoder))
                 
         except HttpError as error:
+            metrics.incr("calendar_sync.error")
             logger.info('An error occurred: %s' % error)
+
+    metrics.incr("calendar_sync.end")
 
 
 if __name__ == '__main__':

@@ -40,6 +40,6 @@ class Switcher:
 
     def _with_loop(self, func):
         loop = asyncio.new_event_loop()
-        result = loop.run_until_complete(func)
+        result = asyncio.get_event_loop().run_until_complete(func)
         loop.close()
         return result
