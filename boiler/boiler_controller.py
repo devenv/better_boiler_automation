@@ -15,19 +15,22 @@ class BoilerController:
         self.switcher = Switcher()
 
     def is_on(self) -> bool:
-        return self.switcher.is_on()
+        state = self.switcher.is_on()
+        if state:
+            metrics.gauge('boiler.boiler_on', 1)
+        else:
+            metrics.gauge('boiler.boiler_on', 0)
+        return state
 
     def turn_on(self) -> None:
         self.switcher.turn_on()
         self._broadcast('Turning boiler on')
         metrics.event('boiler state', 'boiler heating', alert_type='info')
-        metrics.gauge('boiler.boiler_on', 1)
 
     def turn_off(self) -> None:
         self.switcher.turn_off()
         self._broadcast('Turning boiler off')
         metrics.event('boiler state', 'boiler off', alert_type='info')
-        metrics.gauge('boiler.boiler_on', 0)
 
     def _broadcast(self, message: str) -> None:
         self.assistant.ask(f'broadcast "{message}"')
