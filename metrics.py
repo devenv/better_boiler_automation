@@ -21,7 +21,7 @@ class Metrics:
 
     def incr(self, metric, tags={}):
         if STATS_ENABLED:
-            statsd.increment(metric, tags)
+            statsd.increment(metric, tags=tags)
 
     def gauge(self, metric, value, tags={}):
         if STATS_ENABLED:
