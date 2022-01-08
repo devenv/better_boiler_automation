@@ -65,7 +65,7 @@ class CalendarSync:
             print(schedule)
             schedule_ds = ScheduleDataStore()
             old_schedule = schedule_ds.load_schedule()
-            if not old_schedule or Time.list_to_json(schedule) != Time.list_to_json(old_schedule):
+            if not old_schedule or schedule != old_schedule:
                 logger.info(f'New schedule: {schedule}')
                 metrics.incr("calendar_sync.schedule_changed")
                 schedule_ds.save_schedule(schedule)

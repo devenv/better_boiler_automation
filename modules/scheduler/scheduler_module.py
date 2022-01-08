@@ -6,6 +6,10 @@ from modules.scheduler.boiler.boiler_controller import BoilerController, DummyBo
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.scheduler import Scheduler
 
+from utils.logger import get_logger
+
+logger = get_logger()
+
 
 class SchedulerModule(Module):
 
@@ -18,6 +22,7 @@ class SchedulerModule(Module):
         calculator = Calculator(TemperatureDataStore(), CloudsDataStore()).load()
         schedule = ScheduleDataStore().load_schedule()
         schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
+        logger.info(f"Got schedule: {schedule}")
         if self.TEST_MODE:
             boiler_controller = DummyBoilerController(initial_state=False)
         else:

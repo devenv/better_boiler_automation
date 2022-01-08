@@ -78,4 +78,6 @@
 
   sh send_event.sh 'deploy' 'finished' 'success'
 
+  echo "Everything was deployed"
+
 }
