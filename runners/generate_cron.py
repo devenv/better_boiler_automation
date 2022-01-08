@@ -10,4 +10,4 @@ if __name__ == "__main__":
     for module in available_modules:
         print(f"{DEPLOY_MODULES_SCHEDULE} sh deploy_module.sh {module.NAME} >> ~/deploy_module_{module.NAME}.log 2>&1")
     for module in available_modules:
-        print(f"{module.SCHEDULE} sh run_module.sh {module.NAME} >> run_module_{module.NAME} 2>&1")
+        print(f"{module.SCHEDULE} sh run_module.sh {module.NAME} >> run_module_{module.NAME}.log 2>&1")
