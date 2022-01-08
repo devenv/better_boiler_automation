@@ -14,12 +14,18 @@ logger = get_logger()
 metrics = Metrics()
 
 
+class NoScheduleException(Exception):
+    pass
+
+
 class Scheduler:
 
     def __init__(self, times: List[Time], calculator: Calculator, boiler_controller: BoilerController):
         self.calculator = calculator
         self.boiler_controller = boiler_controller
         self.times = times
+        if not times:
+            raise NoScheduleException()
 
     def run(self) -> None:
         metrics.gauge("scheduler.schedules_loaded", len(self.times))

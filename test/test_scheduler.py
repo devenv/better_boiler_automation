@@ -4,12 +4,11 @@ from unittest.mock import MagicMock
 from datetime import datetime
 from freezegun import freeze_time
 
-from data_stores.schedule.schedule_data_store import ScheduleDataStore, Time
+from data_stores.schedule.schedule_data_store import Time
 from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
 from modules.calendar_sync.calendar_sync import CalendarSync
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.scheduler import Scheduler
-from modules.weather.weather_provider import WeatherData
 
 from test.calculator_config_override import calculator_config_override
 
@@ -104,12 +103,12 @@ class TestScheduler(TestCase):
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_easy(self):
-        scheduler = Scheduler(None, None, None)
+        scheduler = self._get_scheduler(3.5, None, [12, 23, 1])
         self.assertEqual(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_with_jump(self):
-        scheduler = Scheduler(None, None, None)
+        scheduler = self._get_scheduler(3.5, None, [12, 23, 1])
         self.assertEqual(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
     
     def test_calendar_sync_output_format(self):

@@ -25,16 +25,6 @@ TIME_ZONE = 2
 
 class CalendarSync:
 
-    def get_schedule(self, events) -> List[Time]:
-        schedule = []
-        for event in events:
-            start = datetime.fromisoformat(event['start'].get('dateTime', event['start'].get('date')))
-            summary = event['summary']
-            if "Boiler intensity:" in summary:
-                intensity = summary.split('intensity:')[1]
-                schedule.append(Time(start.hour, start.minute, int(intensity)))
-        return schedule
-
     def run(self):
         metrics.incr("calendar_sync.start")
         creds = None
@@ -61,9 +51,15 @@ class CalendarSync:
                 logger.info('No upcoming events found.')
                 return
 
-            schedule = self.get_schedule(events)
-            print(schedule)
             schedule_ds = ScheduleDataStore()
+
+            kill_switch = self.has_kill_switch(events)
+            if kill_switch:
+                schedule_ds.save_schedule([])
+                return
+
+            schedule = self.get_schedule(events)
+
             old_schedule = schedule_ds.load_schedule()
             if not old_schedule or schedule != old_schedule:
                 logger.info(f'New schedule: {schedule}')
@@ -74,4 +70,17 @@ class CalendarSync:
             metrics.incr("calendar_sync.error")
             logger.info('An error occurred: %s' % error)
 
-    metrics.incr("calendar_sync.end")
+        metrics.incr("calendar_sync.end")
+
+    def get_schedule(self, events) -> List[Time]:
+        schedule = []
+        for event in events:
+            start = datetime.fromisoformat(event['start'].get('dateTime', event['start'].get('date')))
+            summary = event['summary']
+            if "Boiler intensity:" in summary:
+                intensity = summary.split('intensity:')[1]
+                schedule.append(Time(start.hour, start.minute, int(intensity)))
+        return schedule
+
+    def has_kill_switch(self, events) -> bool:
+        return any("kill switch" in event['summary'].lower() for event in events)
