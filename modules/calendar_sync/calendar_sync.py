@@ -69,8 +69,6 @@ class CalendarSync:
                 metrics.event("schedule change", "by calendar", alert_type="info")
                 new_schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
                 schedule_ds.save_schedule(new_schedule)
-            else:
-                logger.info(f'Same schedule: {old_schedule} - {schedule}')
                 
         except HttpError as error:
             metrics.incr("calendar_sync.error")
