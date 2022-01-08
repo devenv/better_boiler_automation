@@ -10,7 +10,7 @@ class SchedulerModule(Module):
 
     TEST_MODE = False
     NAME = 'scheduler'
-    SCHEDULE = "*/5 * * * *"
+    SCHEDULE = "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
 
     def run(self):
         calculator = Calculator(TemperatureDataStore(), CloudsDataStore()).load()

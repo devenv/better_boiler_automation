@@ -6,7 +6,7 @@ from modules.weather.weather_provider import WeatherProvider
 class WeatherModule(Module):
     
     NAME ='weather'
-    SCHEDULE = "*/15 * * * *"
+    SCHEDULE = "1,6,11,16,21,26,31,36,41,46,51,56 * * * *"
 
     def run(self):
         weather = WeatherProvider().get_weather_data()
