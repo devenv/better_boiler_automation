@@ -14,7 +14,7 @@
 
   cd boiler_clone
   new_last_commit=$(git log --format="%H" -n 1)
-  cd ../boiler
+  cd ../boiler_ready
   old_last_commit=$(git log --format="%H" -n 1)
   cd ..
 
