@@ -19,7 +19,7 @@ DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 class Assistant(object):
 
     def __init__(self):
-        self.config = load_dict("device_config.json")
+        self.config = load_dict("device_config")
         self.device_model_id = self.config['device_model_id']
         self.device_id = self.config['device_id']
 

@@ -25,8 +25,8 @@ class WeatherData:
 
 class WeatherProvider:
 
-    api_key = load_string('weather_api_key.txt')
-    location = load_string('my_location.txt')
+    api_key = load_string('weather_api_key')
+    location = load_string('my_location')
 
     HOURS_TO_LOOK_BACK = 8
 

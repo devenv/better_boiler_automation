@@ -18,7 +18,7 @@ class Calculator:
     def __init__(self, temperature_ds: TemperatureDataStore, clouds_ds: CloudsDataStore):
         self.temperature_ds = temperature_ds
         self.clouds_ds = clouds_ds
-        self.config = load_dict("calculator_config.json")
+        self.config = load_dict("calculator_config")
         
     def load(self):
         self.temperatures = self.temperature_ds.read_all_values()

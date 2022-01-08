@@ -9,7 +9,7 @@ from utils.secrets import load_dict
 class Switcher:
 
     def __init__(self):
-        self.config = load_dict("switcher_config.json")
+        self.config = load_dict("switcher_config")
 
     def is_on(self):
         return self._with_loop(self._is_on())

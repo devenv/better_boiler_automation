@@ -9,10 +9,9 @@ else:
 
 
 def load_dict(file: str) -> dict:
-    with open(f"{SECRETS_PATH}/{file}", "r") as f:
+    with open(f"{SECRETS_PATH}/{file}.json", "r") as f:
         return json.load(f)
     
 def load_string(file):
-    os.path.exists(f"{SECRETS_PATH}/{file}")
-    with open(f"{SECRETS_PATH}/{file}", "r") as f:
+    with open(f"{SECRETS_PATH}/{file}.txt", "r") as f:
         return f.readline().strip()
