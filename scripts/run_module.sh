@@ -9,4 +9,4 @@ export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export STATS_ENABLED=True
 export DD_SERVICE=$name
 
-python runners/run_module.py $name
+python -m runners.run_module.py $name

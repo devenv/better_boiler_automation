@@ -39,14 +39,14 @@
     pip3.7 install -r requirements.txt
     if [ $? -eq 0 ]; then
       echo 'requirements installed'
-      sh send_event.sh 'deploy' 'requirements installed' 'info'
+      sh ../send_event.sh 'deploy' 'requirements installed' 'info'
     else
       echo 'failed installing requirements'
-      sh send_event.sh 'deploy' 'failed installing requirements' 'error'
+      sh ../send_event.sh 'deploy' 'failed installing requirements' 'error'
       exit 2
     fi
   else
-    sh send_event.sh 'deploy' 'requirements skipped' 'info'
+    sh ../send_event.sh 'deploy' 'requirements skipped' 'info'
   fi
 
   echo "Running tests"
@@ -54,18 +54,18 @@
   python3.7 -m unittest
   if [ $? -eq 0 ]; then
     echo 'tests passed'
-    sh send_event.sh 'deploy' 'tests passed' 'info'
+    sh ../send_event.sh 'deploy' 'tests passed' 'info'
   else
     echo 'tests failed'
     export STATS_ENABLED=True
-    sh send_event.sh 'deploy' 'tests failed' 'error'
+    sh ../send_event.sh 'deploy' 'tests failed' 'error'
     return 1
   fi
 
   export STATS_ENABLED=True
 
   if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-    sh send_event.sh 'configuration change' 'calculator' 'info'
+    sh ../send_event.sh 'configuration change' 'calculator' 'info'
   fi
 
   cd ..

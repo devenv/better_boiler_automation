@@ -8,4 +8,4 @@ export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
 export STATS_ENABLED=True
 export DD_SERVICE=$name
 
-python runners/generate_cron.py
+python -m runners.generate_cron
