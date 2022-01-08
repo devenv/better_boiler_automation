@@ -1,0 +1,16 @@
+{
+    "sun_intensity_temperature_min": 20,
+    "sun_intensity_temperature_max": 35,
+    "sun_output_per_day_per_sq_meter_min": 0,
+    "sun_output_per_day_per_sq_meter_max": 4,
+    "sun_receiving_area_in_sq_meters": 2,
+    "boiler_capacity_in_liters": 100,
+    "boiler_power_in_amperes": 10,
+    "voltage": 220,
+    "boiler_min_heating_time_in_minutes": 5,
+    "boiler_nurfer": 1.0,
+    "desired_max_intensity_temperature": 55,
+    "desired_min_intensity_temperature": 30,
+    "clouds_part": 0.2,
+    "hours_ago_to_consider": 6
+}
