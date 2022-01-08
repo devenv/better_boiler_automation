@@ -46,7 +46,7 @@ class Calculator:
         self._report_gauge("sun_output", sun_output)
         cloudiness = Clouds(self.config).cloudiness(self.clouds)
         self._report_gauge("clouds_factor", cloudiness)
-        sun_output = (sun_output * (1 - self.config['clouds_part'])) + (cloudiness * self.config['clouds_part'])
+        sun_output = (sun_output * (1 - self.config['clouds_part'])) + (sun_output * cloudiness * self.config['clouds_part'])
         self._report_gauge("sun_output_with_clouds", sun_output)
 
         delta_energy = needed_energy - sun_output

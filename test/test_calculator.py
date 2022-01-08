@@ -51,7 +51,7 @@ class TestCalculator(TestCase):
 
         hours = self.calculator.needed_hours_to_heat(10)
 
-        self.assertAlmostEqual(hours, 0.57, places=2)
+        self.assertAlmostEqual(hours, 0.40, places=2)
 
     def test_sun_intensity(self):
         self.assertEqual(Sun(self.calculator.config).intensity([21]), 0.4)
@@ -95,8 +95,8 @@ class TestCalculator(TestCase):
         
         self.calculator.config['clouds_part'] = 1
         hours = self.calculator.needed_hours_to_heat(10)
-        self.assertAlmostEqual(hours, 1.628, places=2)
+        self.assertAlmostEqual(hours, 1.098, places=2)
 
         self.calculator.config['clouds_part'] = 0.5
         hours = self.calculator.needed_hours_to_heat(10)
-        self.assertAlmostEqual(hours, 0.98, places=2)
+        self.assertAlmostEqual(hours, 0.719, places=2)
