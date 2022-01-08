@@ -13,6 +13,7 @@ class SchedulerModule(Module):
     SCHEDULE = "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
 
     def run(self):
+        super().run()
         calculator = Calculator(TemperatureDataStore(), CloudsDataStore()).load()
         schedule = ScheduleDataStore().load_schedule()
         if self.TEST_MODE:

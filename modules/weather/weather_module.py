@@ -9,6 +9,7 @@ class WeatherModule(Module):
     SCHEDULE = "1,6,11,16,21,26,31,36,41,46,51,56 * * * *"
 
     def run(self):
+        super().run()
         weather = WeatherProvider().get_weather_data()
         TemperatureDataStore().add_value(weather.temperature)
         CloudsDataStore().add_value(weather.clouds)

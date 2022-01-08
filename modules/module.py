@@ -1,7 +1,15 @@
+from utils.logger import get_logger
+from utils.metrics import Metrics
+
+logger = get_logger()
+metrics = Metrics()
+
+
 class Module:
 
     NAME = None
     SCHEDULE = None
 
     def run(self):
-        pass
+        logger.info(f"Running: {self.NAME}")
+        metrics.incr("module.{self.NAME}.run")
