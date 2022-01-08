@@ -3,7 +3,6 @@ from dataclasses_json import dataclass_json
 from datetime import datetime, timedelta
 import json
 import os
-import sys
 from typing import Generic, TypeVar, List
 
 GLOBAL_STORE = os.environ.get("GLOBAL_STORE") == 'True'
@@ -35,7 +34,7 @@ class FileDataPersister:
     
     def load_raw_data(self) -> str:
         try:
-            with open(f"data/{self.id}.txt", "r") as f:
+            with open(f"{DATA_PATH}/{self.id}.txt", "r") as f:
                 return f.read().strip()
         except FileNotFoundError:
             raise DataNotFoundException()

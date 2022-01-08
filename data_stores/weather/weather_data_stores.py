@@ -3,7 +3,7 @@ from datetime import timedelta
 from data_stores.data_persisters import FreshDataStore
 
 
-FRESHNESS = timedelta(minutes=10)
+FRESHNESS = timedelta(hours=1)
 MAX_SIZE = 100
 
 
