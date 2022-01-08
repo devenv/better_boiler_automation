@@ -15,7 +15,7 @@ if [ -z "$schedule" ]; then
     exit 1
 fi
 
-if ! echo $schedule | crontab; then
+if ! echo "$schedule" | crontab -; then
     echo "Couldn't set cron, reverting: $schedule"
-    echo $old_cron | crontab -
+    echo "$old_cron" | crontab -
 fi 
