@@ -6,7 +6,7 @@ from modules.weather.weather_provider import WeatherProvider
 class WeatherModule(Module):
     
     NAME ='weather'
-    SCHEDULE = "1,6,11,16,21,26,31,36,41,46,51,56 * * * *"
+    SCHEDULE = "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
 
     def run(self):
         super().run()

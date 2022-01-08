@@ -10,7 +10,7 @@ class SchedulerModule(Module):
 
     TEST_MODE = False
     NAME = 'scheduler'
-    SCHEDULE = "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+    SCHEDULE = "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"
 
     def run(self):
         super().run()
