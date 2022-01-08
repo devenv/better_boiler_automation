@@ -17,8 +17,8 @@ logger = get_logger()
 metrics = Metrics()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-CREDENTIALS_FILE = os.path.join(sys.path[0], "secrets/credentials.json")
-TOKEN_FILE = os.path.join(sys.path[0], "secrets/token.json")
+CREDENTIALS_FILE = os.path.join(sys.path[0], "credentials.json")
+TOKEN_FILE = os.path.join(sys.path[0], "token.json")
 TIME_ZONE = 2
 
 

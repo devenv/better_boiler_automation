@@ -9,7 +9,7 @@ import google.oauth2.credentials
 from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_assistant_pb2_grpc
 
 from utils.logger import get_logger
-from utils.files import load_dict
+from utils.secrets import load_dict
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
@@ -19,7 +19,7 @@ DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 class Assistant(object):
 
     def __init__(self):
-        self.config = load_dict("secrets/device_config.json")
+        self.config = load_dict("device_config.json")
         self.device_model_id = self.config['device_model_id']
         self.device_id = self.config['device_id']
 

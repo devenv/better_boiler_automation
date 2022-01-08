@@ -11,7 +11,7 @@ from pyowm.weatherapi25.weather import Weather
 
 from utils.logger import get_logger
 from utils.metrics import Metrics
-from utils.files import load_string
+from utils.secrets import load_string
 
 logger = get_logger()
 metrics = Metrics()
@@ -25,8 +25,8 @@ class WeatherData:
 
 class WeatherProvider:
 
-    api_key = load_string('secrets/weather_api_key.txt')
-    location = load_string('secrets/my_location.txt')
+    api_key = load_string('weather_api_key.txt')
+    location = load_string('my_location.txt')
 
     HOURS_TO_LOOK_BACK = 8
 

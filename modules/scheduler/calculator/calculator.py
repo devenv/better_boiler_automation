@@ -5,7 +5,7 @@ from modules.scheduler.calculator.sun import Sun
 
 from utils.logger import get_logger
 from utils.metrics import Metrics
-from utils.files import load_dict
+from utils.secrets import load_dict
 
 logger = get_logger()
 metrics = Metrics()
@@ -18,7 +18,7 @@ class Calculator:
     def __init__(self, temperature_ds: TemperatureDataStore, clouds_ds: CloudsDataStore):
         self.temperature_ds = temperature_ds
         self.clouds_ds = clouds_ds
-        self.config = load_dict("secrets/calculator_config.json")
+        self.config = load_dict("calculator_config.json")
         
     def load(self):
         self.temperatures = self.temperature_ds.read_all_values()

@@ -3,13 +3,13 @@ import asyncio
 from aioswitcher.api import SwitcherV2Api
 from aioswitcher import consts
 
-from utils.files import load_dict
+from utils.secrets import load_dict
 
 
 class Switcher:
 
     def __init__(self):
-        self.config = load_dict("secrets/switcher_config.json")
+        self.config = load_dict("switcher_config.json")
 
     def is_on(self):
         return self._with_loop(self._is_on())

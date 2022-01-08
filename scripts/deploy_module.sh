@@ -2,5 +2,5 @@
 
 name=$1
 
-rm $name
+rm $name -rf
 cp -r boiler_ready $name

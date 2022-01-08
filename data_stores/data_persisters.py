@@ -6,6 +6,11 @@ import os
 import sys
 from typing import Generic, TypeVar, List
 
+GLOBAL_STORE = os.environ.get("GLOBAL_STORE") == 'True'
+if GLOBAL_STORE:
+    DATA_PATH = f"{os.path.expanduser('~')}/.boiler/data"
+else:
+    DATA_PATH = "data"
 
 T = TypeVar('T')
 
@@ -23,21 +28,21 @@ class FileDataPersister:
         self.id = id
     
     def save_raw_data(self, data: str) -> None:
-        if not os.path.exists('data'):
-            os.makedirs('data')
-        with open(os.path.join(sys.path[0], f"data/{self.id}.txt"), "w") as f:
+        if not os.path.exists(DATA_PATH):
+            os.makedirs(DATA_PATH)
+        with open(f"{DATA_PATH}/{self.id}.txt", "w") as f:
             f.write(data)
     
     def load_raw_data(self) -> str:
         try:
-            with open(os.path.join(sys.path[0], f"data/{self.id}.txt"), "r") as f:
+            with open(f"data/{self.id}.txt", "r") as f:
                 return f.read().strip()
         except FileNotFoundError:
             raise DataNotFoundException()
 
     def clear(self):
         try:
-            os.remove(os.path.join(sys.path[0], f"data/{self.id}.txt"))
+            os.remove(f"{DATA_PATH}/{self.id}.txt")
         except FileNotFoundError:
             pass
         return self
