@@ -20,7 +20,9 @@
 
   rm -rf better_boiler_automation_configs
   git clone git@github.com:devenv/better_boiler_automation_configs.git
+  mkdir ~/.boiler/secrets -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/
+  mkdir boiler_clone/secrets -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
