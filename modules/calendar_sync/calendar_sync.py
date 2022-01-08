@@ -12,13 +12,14 @@ from data_stores.schedule.schedule_data_store import ScheduleDataStore, Time
 
 from utils.logger import get_logger
 from utils.metrics import Metrics
+from utils.secrets import SECRETS_PATH
 
 logger = get_logger()
 metrics = Metrics()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-CREDENTIALS_FILE = os.path.join(sys.path[0], "credentials.json")
-TOKEN_FILE = os.path.join(sys.path[0], "token.json")
+CREDENTIALS_FILE = os.path.join(SECRETS_PATH, "credentials.json")
+TOKEN_FILE = os.path.join(SECRETS_PATH, "token.json")
 TIME_ZONE = 2
 
 
