@@ -3,13 +3,13 @@ from unittest.mock import MagicMock
 
 from datetime import datetime
 from freezegun import freeze_time
-from scheduler.scheduler_config import SchedulerConfig, Time
 
-from calculator.calculator import Calculator
-from scheduler.calendar_sync import CalendarSync
-from scheduler.scheduler import Scheduler
-from scheduler.scheduler_config import Time
-from weather.weather_provider import WeatherData
+from data_stores.schedule.schedule_data_store import ScheduleDataStore, Time
+from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from modules.calendar_sync.calendar_sync import CalendarSync
+from modules.scheduler.calculator.calculator import Calculator
+from modules.scheduler.scheduler import Scheduler
+from modules.weather.weather_provider import WeatherData
 
 from test.calculator_config_override import calculator_config_override
 
@@ -17,30 +17,38 @@ from test.calculator_config_override import calculator_config_override
 class TestScheduler(TestCase):
 
     def setUp(self):
-        self.calculator = Calculator()
+        self.temperature_ds = TemperatureDataStore().clear()
+        self.clouds_ds = CloudsDataStore().clear()
+        self.calculator = Calculator(self.temperature_ds, self.clouds_ds)
         self.calculator.config = calculator_config_override()
 
     def test_scheduler_simulation_simple(self):
-        weather_data = [WeatherData(temperature=10, clouds=0)]
+        self.temperature_ds.add_values([10])
+        self.clouds_ds.add_values([0])
+        self.calculator.load()
         times = [Time(6, 0, 10), Time(10, 0, 12)]
 
-        boiler_controller = self._run_simulation(weather_data, times)
+        boiler_controller = self._run_simulation(times)
 
         self._verify_execution(boiler_controller, (4, 6), (8, 10))
 
     def test_scheduler_simulation_overlap(self):
-        weather_data = [WeatherData(temperature=10, clouds=0)]
+        self.temperature_ds.add_values([10])
+        self.clouds_ds.add_values([0])
+        self.calculator.load()
         times = [Time(6, 0, 10), Time(7, 0, 10)]
 
-        boiler_controller = self._run_simulation(weather_data, times)
+        boiler_controller = self._run_simulation(times)
 
         self._verify_execution(boiler_controller, (4, 7))
 
     def test_scheduler_simulation_more_overlap(self):
-        weather_data = [WeatherData(temperature=10, clouds=0)]
+        self.temperature_ds.add_values([10])
+        self.clouds_ds.add_values([0])
+        self.calculator.load()
         times = [Time(6, 0, 10), Time(6, 30, 10), Time(7, 0, 10)]
 
-        boiler_controller = self._run_simulation(weather_data, times)
+        boiler_controller = self._run_simulation(times)
 
         self._verify_execution(boiler_controller, (4, 7))
 
@@ -51,7 +59,7 @@ class TestScheduler(TestCase):
     def test_scheduler_should_turn_on(self):
         boiler_controller = BoilerControllerSpy(is_on=False)
 
-        self._get_scheduler(3.5, boiler_controller, [8]).check()
+        self._get_scheduler(3.5, boiler_controller, [8]).run()
 
         self.assertEqual(boiler_controller.turned_on, 1)
         self.assertEqual(boiler_controller.turned_off, 0)
@@ -60,7 +68,7 @@ class TestScheduler(TestCase):
     def test_scheduler_should_turn_off(self):
         boiler_controller = BoilerControllerSpy(is_on=True)
 
-        self._get_scheduler(3.5, boiler_controller, [11]).check()
+        self._get_scheduler(3.5, boiler_controller, [11]).run()
 
         self.assertEqual(boiler_controller.turned_on, 0)
         self.assertEqual(boiler_controller.turned_off, 1)
@@ -69,7 +77,7 @@ class TestScheduler(TestCase):
     def test_scheduler_should_turn_on_with_jump(self):
         boiler_controller = BoilerControllerSpy(is_on=False)
 
-        self._get_scheduler(3.5, boiler_controller, [1]).check()
+        self._get_scheduler(3.5, boiler_controller, [1]).run()
 
         self.assertEqual(boiler_controller.turned_on, 1)
         self.assertEqual(boiler_controller.turned_off, 0)
@@ -96,12 +104,12 @@ class TestScheduler(TestCase):
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_easy(self):
-        scheduler = Scheduler(None, None, None, None)
+        scheduler = Scheduler(None, None, None)
         self.assertEqual(scheduler._find_next_hour(Time(7, 30, 10)), datetime(2021, 1, 1, 7, 30, 0))
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_find_next_hour_with_jump(self):
-        scheduler = Scheduler(None, None, None, None)
+        scheduler = Scheduler(None, None, None)
         self.assertEqual(scheduler._find_next_hour(Time(4, 20, 10)), datetime(2021, 1, 2, 4, 20, 0))
     
     def test_calendar_sync_output_format(self):
@@ -114,16 +122,12 @@ class TestScheduler(TestCase):
         result = CalendarSync().get_schedule(events)
         self.assertEqual(result, [Time(8, 30, 10)])
 
-    def _run_simulation(self, weather_data, times):
-        weather_provider = MagicMock()
-        weather_provider.get_weather_data = MagicMock(return_value=weather_data)
+    def _run_simulation(self, times):
         boiler_controller = BoilerControllerSpy(is_on=False)
-        config = SchedulerConfig()
-        config.times = times
-        scheduler = Scheduler(weather_provider, self.calculator, boiler_controller, config)
+        scheduler = Scheduler(times, self.calculator, boiler_controller)
         for i in range(24):
             with freeze_time(self._datetime_for_hour(i)):
-                scheduler.check()
+                scheduler.run()
         return boiler_controller
 
     def _verify_execution(self, boiler_controller, *executions):
@@ -134,10 +138,8 @@ class TestScheduler(TestCase):
         
     def _get_scheduler(self, hours_to_heat, boiler_controller, configured_hours):
         self.calculator.needed_hours_to_heat = MagicMock(return_value=hours_to_heat)
-        weather_provider = MagicMock()
-        config = MagicMock()
-        config.times = [Time(hour=hour, minute=0, intensity=0) for hour in configured_hours]
-        return Scheduler(weather_provider, self.calculator, boiler_controller, config)
+        times = [Time(hour=hour, minute=0, intensity=0) for hour in configured_hours]
+        return Scheduler(times, self.calculator, boiler_controller)
 
 
 class BoilerControllerSpy:

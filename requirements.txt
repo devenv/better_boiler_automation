@@ -1,4 +1,5 @@
 aioswitcher==1.2.5
+dataclasses-json==0.5.6
 datadog==0.43.0
 freezegun==1.1.0
 google-api-python-client==2.33.0

@@ -2,13 +2,6 @@
 
 {
 
-  send_event () {
-    title=$1
-    text=$2
-    alert_type=$3
-    echo "_e{${#title},${#text}}:$title|$text|#shell|t:$alert_type" | socat -t 0 - UDP:localhost:8125
-  }
-
   export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
   export DD_TRACE_ENABLED=False
   export STATS_ENABLED=True
@@ -32,10 +25,10 @@
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
-    send_event 'skipped' 'skipped' 'info'
+    sh send_event.sh 'skipped' 'skipped' 'info'
     exit 0
   fi
-  send_event 'deploy' 'started' 'info'
+  sh send_event.sh 'deploy' 'started' 'info'
 
   cd boiler_clone
 
@@ -46,14 +39,14 @@
     pip3.7 install -r requirements.txt
     if [ $? -eq 0 ]; then
       echo 'requirements installed'
-      send_event 'deploy' 'requirements installed' 'info'
+      sh send_event.sh 'deploy' 'requirements installed' 'info'
     else
       echo 'failed installing requirements'
-      send_event 'deploy' 'failed installing requirements' 'error'
+      sh send_event.sh 'deploy' 'failed installing requirements' 'error'
       exit 2
     fi
   else
-    send_event 'deploy' 'requirements skipped' 'info'
+    sh send_event.sh 'deploy' 'requirements skipped' 'info'
   fi
 
   echo "Running tests"
@@ -61,26 +54,26 @@
   python3.7 -m unittest
   if [ $? -eq 0 ]; then
     echo 'tests passed'
-    send_event 'deploy' 'tests passed' 'info'
+    sh send_event.sh 'deploy' 'tests passed' 'info'
   else
     echo 'tests failed'
     export STATS_ENABLED=True
-    send_event 'deploy' 'tests failed' 'error'
+    sh send_event.sh 'deploy' 'tests failed' 'error'
     return 1
   fi
 
   export STATS_ENABLED=True
 
   if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-    send_event 'configuration change' 'calculator' 'info'
+    sh send_event.sh 'configuration change' 'calculator' 'info'
   fi
 
   cd ..
 
-  rm -rf boiler
-  cp -r boiler_clone boiler
-  cp boiler/scripts/* ./
+  rm -rf boiler_ready
+  cp -r boiler_clone boiler_ready
+  cp boiler_ready/scripts/* ./
 
-  send_event 'deploy' 'finished' 'success'
+  sh send_event.sh 'deploy' 'finished' 'success'
 
 }

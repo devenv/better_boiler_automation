@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 
 import click
 import google.auth.transport.grpc
@@ -9,21 +8,18 @@ import google.oauth2.credentials
 
 from google.assistant.embedded.v1alpha2 import embedded_assistant_pb2, embedded_assistant_pb2_grpc
 
-from logger import get_logger
+from utils.logger import get_logger
+from utils.files import load_dict
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
-def load_config():
-    with open(os.path.join(sys.path[0], "assistant/device_config.json"), "r") as f:
-        return json.load(f)
-
 
 class Assistant(object):
 
     def __init__(self):
-        self.config = load_config()
+        self.config = load_dict("secrets/device_config.json")
         self.device_model_id = self.config['device_model_id']
         self.device_id = self.config['device_id']
 

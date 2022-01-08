@@ -5,10 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Boiler Automation",
+            "name": "Weather",
             "type": "python",
             "request": "launch",
-            "program": "run.py",
+            "program": "run_module.py",
+            "args": ["weather"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
+        },
+        {
+            "name": "Scheduler",
+            "type": "python",
+            "request": "launch",
+            "program": "run_module.py",
+            "args": ["scheduler"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
@@ -19,7 +32,8 @@
             "name": "Calendar Sync",
             "type": "python",
             "request": "launch",
-            "program": "run_calendar_sync.py",
+            "program": "run_module.py",
+            "args": ["calendar_sync"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {

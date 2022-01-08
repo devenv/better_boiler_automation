@@ -1,0 +1,50 @@
+from datetime import datetime, timedelta
+import os
+import sys
+from typing import List
+
+
+from dataclasses import dataclass
+import pyowm
+from pyowm.utils import formatting
+from pyowm.weatherapi25.weather import Weather
+
+from utils.logger import get_logger
+from utils.metrics import Metrics
+from utils.files import load_string
+
+logger = get_logger()
+metrics = Metrics()
+
+
+@dataclass
+class WeatherData:
+    temperature: float
+    clouds: int
+
+
+class WeatherProvider:
+
+    api_key = load_string('secrets/weather_api_key.txt')
+    location = load_string('secrets/my_location.txt')
+
+    HOURS_TO_LOOK_BACK = 8
+
+    def get_weather_data(self) -> WeatherData:
+        owm = pyowm.OWM(self.api_key)
+        mgr = owm.weather_manager()
+        city = owm.city_id_registry().locations_for(self.location)[0]
+        current_weather = self._weather_to_weather_data(mgr.one_call_history(lat=city.lat, lon=city.lon, dt=formatting.to_UNIXtime(datetime.today() - timedelta(hours=1))).current)
+
+        metrics.gauge("current_weather.temperature", current_weather.temperature)
+        metrics.gauge("current_weather.clouds", current_weather.clouds)
+        logger.info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
+
+        return current_weather
+        
+    def _weather_to_weather_data(self, weather: Weather) -> WeatherData:
+        return WeatherData(
+            temperature=weather.temperature('celsius')['temp'],
+            clouds=weather.clouds,
+            #hours_in_day=int((weather.sunset_time() - weather.sunrise_time()) / 60 / 60),
+        )

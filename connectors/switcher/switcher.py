@@ -1,20 +1,15 @@
 import asyncio
-import json
-import os
-import sys
 
 from aioswitcher.api import SwitcherV2Api
 from aioswitcher import consts
 
-def load_config():
-    with open(os.path.join(sys.path[0], "switcher/switcher_config.json"), "r") as f:
-        return json.load(f)
+from utils.files import load_dict
 
 
 class Switcher:
 
     def __init__(self):
-        self.config = load_config()
+        self.config = load_dict("secrets/switcher_config.json")
 
     def is_on(self):
         return self._with_loop(self._is_on())

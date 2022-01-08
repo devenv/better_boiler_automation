@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from boiler.boiler_controller import BoilerController
-from calculator.calculator import Calculator
-from scheduler.scheduler_config import SchedulerConfig, Time
-from weather.weather_provider import WeatherProvider, WeatherData
+from data_stores.schedule.schedule_data_store import Time
+from modules.scheduler.boiler.boiler_controller import BoilerController
+from modules.scheduler.calculator.boiler import Boiler
+from modules.scheduler.calculator.calculator import Calculator
+from modules.calendar_sync.calendar_sync import TIME_ZONE
 
-from logger import get_logger
-from metrics import Metrics
+from utils.logger import get_logger
+from utils.metrics import Metrics
 
 logger = get_logger()
 metrics = Metrics()
@@ -15,26 +16,24 @@ metrics = Metrics()
 
 class Scheduler:
 
-    def __init__(self, weather_provider: WeatherProvider, calculator: Calculator, boiler_controller: BoilerController, config: SchedulerConfig):
-        self.weather_provider = weather_provider
+    def __init__(self, times: List[Time], calculator: Calculator, boiler_controller: BoilerController):
         self.calculator = calculator
         self.boiler_controller = boiler_controller
-        self.config = config
+        self.times = times
 
-    def check(self) -> None:
-        metrics.gauge("scheduler.schedules_loaded", len(self.config.times))
+    def run(self) -> None:
+        metrics.gauge("scheduler.schedules_loaded", len(self.times))
         now = datetime.now()
-        weather: List[WeatherData] = self.weather_provider.get_weather_data()
         is_on = self.boiler_controller.is_on()
 
-        self.calculator.calculate_for_all_intensities(weather)
+        self.calculator.calculate_for_all_intensities()
 
         time = self._get_next_schedule()
-        metrics.gauge("scheduler.next_schedule", self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE) + time.minute / 60, tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.next_schedule", time.plus_hours(TIME_ZONE).hour + time.minute / 60, tags={'intensity': time.intensity})
         metrics.gauge("scheduler.next_intensity", time.intensity, tags={'intensity': time.intensity})
-        metrics.gauge("scheduler.next_temperature", self.calculator._needed_temperature(time.intensity), tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.next_temperature", Boiler(self.calculator.config).needed_temperature(time.intensity), tags={'intensity': time.intensity})
 
-        hours_to_heat = self.calculator.needed_hours_to_heat(weather, time.intensity)
+        hours_to_heat = self.calculator.needed_hours_to_heat(time.intensity)
         metrics.gauge("scheduler.next_hours_needed", hours_to_heat, tags={'intensity': time.intensity})
 
         eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
@@ -44,7 +43,7 @@ class Scheduler:
 
         if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
             if not is_on:
-                logger.info(f"Switching on for hour {self.config.cull_to_real_hour(time.hour + self.config.TIME_ZONE)}:{time.minute} to heat {hours_to_heat:.2f}")
+                logger.info(f"Switching on for hour {time.plus_hours(TIME_ZONE).hour}:{time.minute} to heat {hours_to_heat:.2f}")
                 metrics.gauge("scheduler.hours_heating", hours_to_heat, tags={'intensity': time.intensity})
                 self.boiler_controller.turn_on()
         elif is_on:
@@ -52,8 +51,8 @@ class Scheduler:
 
     def _get_next_schedule(self) -> Time:
         now = datetime.now()
-        minimal_time = self.config.times[0]
-        for time in self.config.times:
+        minimal_time = self.times[0]
+        for time in self.times:
             next_time = self._find_next_hour(time)
             if next_time - now < self._find_next_hour(minimal_time) - now:
                 minimal_time = time
