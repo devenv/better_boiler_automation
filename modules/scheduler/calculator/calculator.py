@@ -23,6 +23,7 @@ class Calculator:
     def load(self):
         self.temperatures = self.temperature_ds.read_all_values()
         self.clouds = self.clouds_ds.read_all_values()
+        return self
 
     def calculate_for_all_intensities(self):
         self.report_metrics = True

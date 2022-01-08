@@ -13,7 +13,7 @@ class SchedulerModule(Module):
     SCHEDULE = "*/5 * * * *"
 
     def run(self):
-        calculator = Calculator(TemperatureDataStore(), CloudsDataStore())
+        calculator = Calculator(TemperatureDataStore(), CloudsDataStore()).load()
         schedule = ScheduleDataStore().load_schedule()
         if self.TEST_MODE:
             boiler_controller = DummyBoilerController(initial_state=False)

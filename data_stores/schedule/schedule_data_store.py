@@ -3,7 +3,7 @@ from dataclasses_json import dataclass_json
 import json
 from typing import List
 
-from data_stores.data_persisters import FileDataPersister
+from data_stores.data_persisters import DataNotFoundException, FileDataPersister
 
 
 @dataclass_json
@@ -12,6 +12,14 @@ class Time:
     hour: int
     minute: int
     intensity: int
+
+    @classmethod
+    def list_from_json(cls, data: str) -> List["Time"]:
+        return Time.schema().load(json.loads(data), many=True)
+        
+    @classmethod
+    def list_to_json(cls, times: List["Time"]) -> str:
+        return json.dumps(Time.schema().dump(times, many=True))
 
     def culled(self):
         self.hour = self._cull_to_real_hour(self. hour)
@@ -34,10 +42,11 @@ class ScheduleDataStore(FileDataPersister):
         super().__init__('schedule')
 
     def save_schedule(self, times: List[Time]) -> None:
-        self.save_raw_data(json.dumps(Time.schema().dump(times, many=True)))
+        self.save_raw_data(Time.list_to_json(times))
 
     def load_schedule(self) -> List[Time]:
-        data = self.load_raw_data()
-        if data:
-            return Time.schema().load(json.loads(data), many=True)
-        return None
+        try:
+            data = self.load_raw_data()
+        except DataNotFoundException:
+            return []
+        return Time.list_from_json(data)

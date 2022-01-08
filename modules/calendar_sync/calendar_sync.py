@@ -64,7 +64,7 @@ class CalendarSync:
             schedule = self.get_schedule(events)
             schedule_ds = ScheduleDataStore()
             old_schedule = schedule_ds.load_schedule()
-            if not old_schedule or schedule.to_json() != old_schedule.to_json():
+            if not old_schedule or Time.list_to_json(schedule) != Time.list_to_json(old_schedule):
                 metrics.event("schedule change", "by calendar", alert_type="info")
                 new_schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
                 schedule_ds.save_schedule(new_schedule)
