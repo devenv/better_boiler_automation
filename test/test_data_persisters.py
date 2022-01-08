@@ -36,7 +36,7 @@ class TestDataPersisters(TestCase):
         with freeze_time(datetime(2022, 1, 1)):
             fresh_ds.add_value(1)
 
-            self.assertEqual(fresh_ds.read_all_values(), [1])
+            self.assertEqual(fresh_ds.read_all_values_since(timedelta(hours=1)), [1])
 
     def test_fresh_data_store_not_fresh(self):
         fresh_ds = FreshDataStore[int]('test', 100, timedelta(days=1))
@@ -45,4 +45,15 @@ class TestDataPersisters(TestCase):
         with freeze_time(datetime(2022, 1, 1)):
             fresh_ds.add_value(1)
 
-        self.assertRaises(DataNotFreshException, fresh_ds.read_all_values)
+        self.assertRaises(DataNotFreshException, lambda: fresh_ds.read_all_values_since(timedelta(hours=1)))
+
+    def test_fresh_data_store_only_fresh(self):
+        fresh_ds = FreshDataStore[int]('test', 100, timedelta(days=1))
+        fresh_ds.clear()
+
+        with freeze_time(datetime(2022, 1, 1, 12, 0, 0)):
+            fresh_ds.add_value(1)
+        with freeze_time(datetime(2022, 1, 1, 13, 0, 0)):
+            fresh_ds.add_value(2)
+
+            self.assertEqual(fresh_ds.read_all_values_since(timedelta(hours=1)), [2])

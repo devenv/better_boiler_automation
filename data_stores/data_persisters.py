@@ -76,8 +76,8 @@ class FreshData(Generic[T]):
 
 class FreshDataStore(Generic[T], StackDataPersister[T]):
 
-    def __init__(self, id: str, max_size: int, freshness: timedelta):
-        self.freshness = freshness
+    def __init__(self, id: str, max_size: int, not_fresh_threshold: timedelta):
+        self.not_fresh_threshold = not_fresh_threshold
         super().__init__(id, max_size)
 
     def add_value(self, value: T):
@@ -87,10 +87,16 @@ class FreshDataStore(Generic[T], StackDataPersister[T]):
         for value in values:
             self.add_value(value)
 
-    def read_all_values(self) -> List[T]:
+    def read_all_values_since(self, freshness: timedelta) -> List[T]:
         data = [FreshData.from_json(entry) for entry in self.read_stack()]
         if data:
             last_record = data[-1:][0]
-            if last_record.time + self.freshness < datetime.now(last_record.time.tzinfo):
+            now = datetime.now(last_record.time.tzinfo)
+
+            if last_record.time + self.not_fresh_threshold < now:
                 raise DataNotFreshException(f"Data not fresh: {self.id}")
+
+            data = list(filter(lambda x: x.time + freshness > now, data))
+
+            
         return [record.data for record in data]

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
 from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.clouds import Clouds
@@ -21,8 +23,8 @@ class Calculator:
         self.config = load_dict("calculator_config")
         
     def load(self):
-        self.temperatures = self.temperature_ds.read_all_values()
-        self.clouds = self.clouds_ds.read_all_values()
+        self.temperatures = self.temperature_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
+        self.clouds = self.clouds_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
         return self
 
     def calculate_for_all_intensities(self):
