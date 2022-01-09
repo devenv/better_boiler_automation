@@ -36,17 +36,17 @@ class Scheduler:
         self.calculator.calculate_for_all_intensities()
 
         time = self._get_next_schedule()
-        metrics.gauge("scheduler.next_schedule", time.plus_hours(TIME_ZONE).hour + time.minute / 60, tags={'intensity': time.intensity})
-        metrics.gauge("scheduler.next_intensity", time.intensity, tags={'intensity': time.intensity})
-        metrics.gauge("scheduler.next_temperature", Boiler(self.calculator.config).needed_temperature(time.intensity), tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.next_schedule", time.plus_hours(TIME_ZONE).hour + time.minute / 60)
+        metrics.gauge("scheduler.next_intensity", time.intensity)
+        metrics.gauge("scheduler.next_temperature", Boiler(self.calculator.config).needed_temperature(time.intensity))
 
         hours_to_heat = self.calculator.needed_hours_to_heat(time.intensity)
-        metrics.incr("scheduler.next_hours_needed", amount=hours_to_heat, tags={'intensity': time.intensity})
+        metrics.incr("scheduler.next_hours_needed", amount=hours_to_heat)
 
         eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
         eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
-        metrics.gauge("scheduler.eta_on", eta_on, tags={'intensity': time.intensity})
-        metrics.gauge("scheduler.eta_off", eta_off, tags={'intensity': time.intensity})
+        metrics.gauge("scheduler.eta_on", eta_on)
+        metrics.gauge("scheduler.eta_off", eta_off)
 
         if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
             if not is_on:
