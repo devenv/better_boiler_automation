@@ -1,7 +1,7 @@
 integrations:
   node_exporter:
     enabled: true
-    textfile: /home/pi/.boiler/data
+    textfile_directory: /home/pi/.boiler/data
   prometheus_remote_write:
     - basic_auth:
         password: PASSWORD
