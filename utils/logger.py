@@ -1,6 +1,9 @@
 from datetime import datetime
 import logging
+import os
 from pythonjsonlogger import jsonlogger
+
+LOGGER_ENABLED = os.environ.get('LOGGER_ENABLED') == 'True'
 
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
@@ -23,12 +26,13 @@ def get_logger():
 
     logger.handlers = []
 
-    stdio_handler = logging.StreamHandler()
-    logger.addHandler(stdio_handler)
+    if LOGGER_ENABLED:
+        stdio_handler = logging.StreamHandler()
+        logger.addHandler(stdio_handler)
 
-    file_handler = logging.FileHandler('boiler.log')
-    formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+        file_handler = logging.FileHandler('boiler.log')
+        formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
     return logger
