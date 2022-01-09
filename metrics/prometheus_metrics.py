@@ -8,7 +8,7 @@ from metrics.metrics_client import MetricsClient
 JOB_NAME = __main__.__file__
 GLOBAL_STORE = os.environ.get("GLOBAL_STORE") == 'True'
 if GLOBAL_STORE:
-    METRICS_FILE = f"{os.path.expanduser('~')}/.boiler/data/metrics.prom"
+    METRICS_FILE = f"{os.path.expanduser('~')}/.boiler/data/{JOB_NAME.replace('/', '_')}_metrics.prom"
 else:
     METRICS_FILE = "data/metrics.txt"
 
