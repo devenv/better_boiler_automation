@@ -1,8 +1,8 @@
 from connectors.assistant.assistant import Assistant
 from connectors.switcher.switcher import Switcher
 
+from metrics.metrics import Metrics
 from utils.logger import get_logger
-from utils.metrics import Metrics
 
 logger = get_logger()
 metrics = Metrics()

@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import os
-import sys
 from typing import List
 
 from google.auth.transport.requests import Request
@@ -10,8 +9,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from data_stores.schedule.schedule_data_store import ScheduleDataStore, Time
 
+from metrics.metrics import Metrics
 from utils.logger import get_logger
-from utils.metrics import Metrics
 from utils.secrets import SECRETS_PATH
 
 logger = get_logger()

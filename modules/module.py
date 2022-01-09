@@ -1,5 +1,5 @@
 from utils.logger import get_logger
-from utils.metrics import Metrics
+from metrics.metrics import Metrics
 
 logger = get_logger()
 metrics = Metrics()

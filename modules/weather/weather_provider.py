@@ -6,8 +6,8 @@ import pyowm
 from pyowm.utils import formatting
 from pyowm.weatherapi25.weather import Weather
 
+from metrics.metrics import Metrics
 from utils.logger import get_logger
-from utils.metrics import Metrics
 from utils.secrets import load_string
 
 logger = get_logger()

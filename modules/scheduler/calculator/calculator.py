@@ -5,8 +5,8 @@ from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.clouds import Clouds
 from modules.scheduler.calculator.sun import Sun
 
+from metrics.metrics import Metrics
 from utils.logger import get_logger
-from utils.metrics import Metrics
 from utils.secrets import load_dict
 
 logger = get_logger()

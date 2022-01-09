@@ -7,8 +7,8 @@ from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.calculator import Calculator
 from modules.calendar_sync.calendar_sync import TIME_ZONE
 
+from metrics.metrics import Metrics
 from utils.logger import get_logger
-from utils.metrics import Metrics
 
 logger = get_logger()
 metrics = Metrics()

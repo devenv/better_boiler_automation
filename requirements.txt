@@ -7,5 +7,6 @@ google-assistant-grpc==0.2.1
 google-assistant-sdk==0.6.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.4.6
+prometheus-client==0.12.0
 pyowm==3.2.0
 python-json-logger==2.0.2

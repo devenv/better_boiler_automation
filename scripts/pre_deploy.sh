@@ -4,7 +4,6 @@
 
   export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
   export DD_TRACE_ENABLED=False
-  export STATS_ENABLED=True
 
   . venv/bin/activate
 
@@ -27,10 +26,9 @@
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
-    sh send_event.sh 'skipped' 'skipped' 'info'
     exit 0
   fi
-  sh send_event.sh 'deploy' 'started' 'info'
+  echo 'Deploy started'
 
   cd boiler_clone
 
@@ -40,34 +38,26 @@
     echo "Installing requirements"
     pip3.7 install -r requirements.txt
     if [ $? -eq 0 ]; then
-      echo 'requirements installed'
-      sh ../send_event.sh 'deploy' 'requirements installed' 'info'
+      echo 'Requirements installed'
     else
-      echo 'failed installing requirements'
-      sh ../send_event.sh 'deploy' 'failed installing requirements' 'error'
+      echo 'Failed installing requirements'
       exit 2
     fi
   else
-    sh ../send_event.sh 'deploy' 'requirements skipped' 'info'
+    echo 'Requirements skipped'
   fi
 
   echo "Running tests"
-  export STATS_ENABLED=False
   python3.7 -m unittest
   if [ $? -eq 0 ]; then
-    echo 'tests passed'
-    sh ../send_event.sh 'deploy' 'tests passed' 'info'
+    echo 'Tests passed'
   else
     echo 'tests failed'
-    export STATS_ENABLED=True
-    sh ../send_event.sh 'deploy' 'tests failed' 'error'
     return 1
   fi
 
-  export STATS_ENABLED=True
-
   if ! cmp calculator/calculator_config.json ../boiler/calculator/calculator_config.json >/dev/null 2>&1; then
-    sh ../send_event.sh 'configuration change' 'calculator' 'info'
+    echo 'Calculator configuration change'
   fi
 
   cd ..
@@ -76,8 +66,6 @@
   cp -r boiler_clone boiler_ready
   cp boiler_ready/scripts/* ./
 
-  sh send_event.sh 'deploy' 'finished' 'success'
-
-  echo "Everything was deployed"
+  echo 'Deploy finished'
 
 }
