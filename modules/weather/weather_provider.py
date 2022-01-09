@@ -35,7 +35,7 @@ class WeatherProvider:
 
         metrics.gauge("current_weather.temperature", current_weather.temperature)
         metrics.gauge("current_weather.clouds", current_weather.clouds)
-        logger.info(f"Current weather: temperature - {current_weather.temperature}, clouds - {current_weather.clouds}")
+        logger.info(f"Temperature: {current_weather.temperature}")
 
         return current_weather
         
