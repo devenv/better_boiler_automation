@@ -2,6 +2,8 @@
 
 name=$1
 
+sh deploy_module.sh $name
+
 . venv/bin/activate
 cd $name
 
