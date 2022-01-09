@@ -29,7 +29,7 @@
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/ >/dev/null 2>&1
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
-    echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
+    echo "Skipping deployment, same commits: $new_last_commit == $old_last_commit"
     exit 0
   fi
   echo 'Deploy started'
@@ -48,7 +48,7 @@
       exit 2
     fi
   else
-    echo 'Requirements skipped'
+    echo 'Skipping installing requirements'
   fi
 
   echo "Running tests"
@@ -56,7 +56,7 @@
   if [ $? -eq 0 ]; then
     echo 'Tests passed'
   else
-    echo 'tests failed'
+    echo 'Tests failed'
     return 1
   fi
 
