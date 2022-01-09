@@ -18,6 +18,11 @@
 
   rm -rf better_boiler_automation_configs
   git clone git@github.com:devenv/better_boiler_automation_configs.git
+
+  if ! cmp ~/.boiler/secrets/calculator_config.json better_boiler_automation_configs/secrets/calculator_config.json >/dev/null 2>&1; then
+    echo 'Calculator configuration change'
+  fi
+
   mkdir boiler_clone/secrets -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/ >& /dev/null
   mkdir ~/.boiler/secrets -p
@@ -53,10 +58,6 @@
   else
     echo 'tests failed'
     return 1
-  fi
-
-  if ! cmp calculator/calculator_config.json ../boiler_ready/calculator/calculator_config.json >/dev/null 2>&1; then
-    echo 'Calculator configuration change'
   fi
 
   cd ..
