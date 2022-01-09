@@ -12,4 +12,4 @@ class Module:
 
     def run(self):
         logger.info(f"Running: {self.NAME}")
-        metrics.incr("module.{self.NAME}.run")
+        metrics.incr(f"module.{self.NAME}.run")
