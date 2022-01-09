@@ -15,7 +15,7 @@ class PrometheusMetrics(MetricsClient):
 
     def incr(self, metric: str, tags: Dict[str, str] = {}):
         metric = metric.replace('.', '_')
-        counter = Counter(metric, metric, registry=self.registry)
+        counter = Counter(metric, metric, labelnames=[list(tags.keys())], registry=self.registry)
         counter.inc()
         if tags:
             counter.labels(**tags)
@@ -23,7 +23,7 @@ class PrometheusMetrics(MetricsClient):
 
     def gauge(self, metric: str, value: float, tags: Dict[str, str] = {}):
         metric = metric.replace('.', '_')
-        gauge = Gauge(metric, metric, registry=self.registry, )
+        gauge = Gauge(metric, metric, labelnames=[list(tags.keys())], registry=self.registry)
         gauge.set(value)
         if tags:
             gauge.labels(**tags)
