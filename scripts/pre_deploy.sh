@@ -20,8 +20,8 @@
   git clone git@github.com:devenv/better_boiler_automation_configs.git
   mkdir boiler_clone/secrets -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/
-  mkdir ~/.boiler_ready/secrets -p
-  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler_ready/secrets/
+  mkdir ~/.boiler/secrets -p
+  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
