@@ -12,13 +12,16 @@ METRICS_CLIENT = 'prometheus'
 
 class Metrics:
 
+    prometheus_client = PrometheusMetrics()
+    datadog_client = DatadogMetrics()
+
     def __init__(self):
         self.client = None
         if STATS_ENABLED:
             if METRICS_CLIENT.lower() == 'prometheus':
-                self.client = PrometheusMetrics()
+                self.client = self.prometheus_client
             elif METRICS_CLIENT.lower() == 'datadog':
-                self.client = DatadogMetrics()
+                self.client = self.datadog_client
 
     def incr(self, metric, tags={}):
         if self.client:
