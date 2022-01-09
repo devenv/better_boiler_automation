@@ -8,7 +8,7 @@
   . venv/bin/activate
 
   rm -rf boiler_clone
-  git clone git@github.com:devenv/better_boiler_automation.git boiler_clone
+  git clone git@github.com:devenv/better_boiler_automation.git boiler_clone >/dev/null 2>&1
 
   cd boiler_clone
   new_last_commit=$(git log --format="%H" -n 1)
@@ -17,7 +17,7 @@
   cd ..
 
   rm -rf better_boiler_automation_configs
-  git clone git@github.com:devenv/better_boiler_automation_configs.git
+  git clone git@github.com:devenv/better_boiler_automation_configs.git >/dev/null 2>&1
 
   if ! cmp ~/.boiler/secrets/calculator_config.json better_boiler_automation_configs/secrets/calculator_config.json >/dev/null 2>&1; then
     echo 'Calculator configuration change'
