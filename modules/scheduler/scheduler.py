@@ -24,6 +24,7 @@ class Scheduler:
         self.calculator = calculator
         self.boiler_controller = boiler_controller
         self.times = times
+        metrics.gauge("scheduler.schedules_loaded", len(times))
         if not times:
             raise NoScheduleException()
 
