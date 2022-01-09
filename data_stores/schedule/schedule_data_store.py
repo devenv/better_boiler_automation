@@ -34,6 +34,9 @@ class Time:
 
     def plus_hours(self, hours: int):
         return Time(self.hour + hours, self.minute, self.intensity).culled()
+
+    def __repr__(self):
+        return f"{self.hour}:{self.minute}-{self.intensity}"
         
 
 class ScheduleDataStore(FileDataPersister):
