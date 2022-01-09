@@ -24,9 +24,9 @@
   fi
 
   mkdir boiler_clone/secrets -p
-  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/ >& /dev/null
+  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/ >/dev/null 2>&1
   mkdir ~/.boiler/secrets -p
-  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/ >& /dev/null
+  rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/ >/dev/null 2>&1
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
     echo "skipping deployment, same commits: $new_last_commit == $old_last_commit"
@@ -67,5 +67,7 @@
   cp boiler_ready/scripts/* ./
 
   echo 'Deploy finished'
+
+  exit
 
 }
