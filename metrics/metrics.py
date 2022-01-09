@@ -23,9 +23,9 @@ class Metrics:
             #elif METRICS_CLIENT.lower() == 'datadog':
                 #self.client = self.datadog_client
 
-    def incr(self, metric, tags={}):
+    def incr(self, metric, amount=1, tags={}):
         if self.client:
-            self.client.incr(metric, tags)
+            self.client.incr(metric, amount, tags)
 
     def gauge(self, metric, value, tags={}):
         if self.client:

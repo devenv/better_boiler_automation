@@ -16,7 +16,7 @@ registry = CollectorRegistry()
 
 class PrometheusMetrics(MetricsClient):
 
-    def incr(self, metric: str, tags: Dict[str, str] = {}):
+    def incr(self, metric: str, amount=1, tags: Dict[str, str] = {}):
         metric = metric.replace('.', '_')
         if metric in registry._names_to_collectors:
             counter = registry._names_to_collectors[metric]
@@ -24,7 +24,7 @@ class PrometheusMetrics(MetricsClient):
             counter = Counter(metric, metric, labelnames=list(tags.keys()), registry=registry)
         if tags:
             counter = counter.labels(tags)
-        counter.inc()
+        counter.inc(amount=amount)
         write_to_textfile(METRICS_FILE, registry)
 
     def gauge(self, metric: str, value: float, tags: Dict[str, str] = {}):

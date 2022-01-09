@@ -17,8 +17,8 @@ class DatadogMetrics(MetricsClient):
     def __init__(self):
         initialize(**self.options)
         
-    def incr(self, metric, tags={}):
-        statsd.increment(metric, tags=tags)
+    def incr(self, metric, amount=1, tags={}):
+        statsd.increment(metric, value=amount, tags=tags)
 
     def gauge(self, metric, value, tags={}):
         statsd.gauge(metric, value, [f"{k}:{v}" for k, v in tags.items()])

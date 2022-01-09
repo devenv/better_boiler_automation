@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class MetricsClient(ABC):
 
     @abstractmethod
-    def incr(self, metric, tags={}):
+    def incr(self, metric, amount=1, tags={}):
         pass
 
     @abstractmethod
