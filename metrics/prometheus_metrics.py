@@ -16,15 +16,11 @@ class PrometheusMetrics(MetricsClient):
     def incr(self, metric: str, tags: Dict[str, str] = {}):
         metric = metric.replace('.', '_')
         counter = Counter(metric, metric, labelnames=[list(tags.keys())], registry=self.registry)
-        counter.inc()
-        if tags:
-            counter.labels(**tags)
+        counter.labels(tags).inc()
         push_to_gateway(GATEWAY, job=JOB_NAME, registry=self.registry)
 
     def gauge(self, metric: str, value: float, tags: Dict[str, str] = {}):
         metric = metric.replace('.', '_')
         gauge = Gauge(metric, metric, labelnames=[list(tags.keys())], registry=self.registry)
-        gauge.set(value)
-        if tags:
-            gauge.labels(**tags)
+        gauge.labels(tags).set(value)
         push_to_gateway(GATEWAY, job=JOB_NAME, registry=self.registry)
