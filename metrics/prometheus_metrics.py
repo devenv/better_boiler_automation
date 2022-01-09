@@ -26,6 +26,7 @@ class PrometheusMetrics(MetricsClient):
 
     def gauge(self, metric: str, value: float, tags: Dict[str, str] = {}):
         registry = CollectorRegistry()
+        metric = metric.replace('.', '_')
         gauge = Gauge(metric, metric, labelnames=list(tags.keys()), registry=registry)
         if tags:
             gauge = gauge.labels(tags)
