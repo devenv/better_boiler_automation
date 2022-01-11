@@ -47,7 +47,7 @@ class FileDataPersister:
         return self
         
 
-class StackDataPersister(Generic[T], FileDataPersister):
+class StackDataPersister(FileDataPersister):
 
     def __init__(self, id: str, max_size: int):
         self.id = id
@@ -63,7 +63,7 @@ class StackDataPersister(Generic[T], FileDataPersister):
             stack.pop()
         self.save_raw_data(json.dumps(stack))
 
-    def read_stack(self) -> List[T]:
+    def read_stack(self) -> List[str]:
         return list(reversed(json.loads(self.load_raw_data())))
 
 
@@ -73,7 +73,7 @@ class FreshData(Generic[T]):
     time: datetime
     data: T
 
-class FreshDataStore(Generic[T], StackDataPersister[T]):
+class FreshDataStore(Generic[T], StackDataPersister):
 
     def __init__(self, id: str, max_size: int, not_fresh_threshold: timedelta):
         self.not_fresh_threshold = not_fresh_threshold
