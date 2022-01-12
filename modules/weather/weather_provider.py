@@ -18,6 +18,13 @@ metrics = Metrics()
 class WeatherData:
     temperature: float
     clouds: int
+    feels_like: float
+    visibility: int
+    humidity: int
+    prcipitation: int
+    pressure: float
+    wind_speed: int
+    wind_direction: int
 
 
 class WeatherProvider:
@@ -35,6 +42,13 @@ class WeatherProvider:
 
         metrics.gauge("current_weather.temperature", current_weather.temperature)
         metrics.gauge("current_weather.clouds", current_weather.clouds)
+        metrics.gauge("current_weather.feels_like", current_weather.feels_like)
+        metrics.gauge("current_weather.visibility", current_weather.visibility)
+        metrics.gauge("current_weather.humidity", current_weather.humidity)
+        metrics.gauge("current_weather.prcipitation", current_weather.prcipitation)
+        metrics.gauge("current_weather.pressure", current_weather.pressure)
+        metrics.gauge("current_weather.wind_speed", current_weather.wind_speed)
+        metrics.gauge("current_weather.wind_direction", current_weather.wind_direction)
         logger.info(f"Temperature: {current_weather.temperature}")
 
         return current_weather
@@ -43,5 +57,11 @@ class WeatherProvider:
         return WeatherData(
             temperature=weather.temperature('celsius')['temp'],
             clouds=weather.clouds,
-            #hours_in_day=int((weather.sunset_time() - weather.sunrise_time()) / 60 / 60),
+            feels_like=weather.temperature('celsius')['feels_like'],
+            visibility=weather.visibility_distance,
+            humidity=weather.humidity,
+            prcipitation=weather.precipitation_probability or 0,
+            pressure=weather.pressure['press'],
+            wind_speed=weather.wind()['speed'],
+            wind_direction=weather.wind()['deg'],
         )
