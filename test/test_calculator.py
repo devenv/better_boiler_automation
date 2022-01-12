@@ -4,7 +4,7 @@ from data_stores.weather.weather_data_stores import CloudsDataStore, Temperature
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.sun import Sun
-from modules.weather.weather_provider import WeatherData
+from modules.weather.weather_data import WeatherData
 
 from test.calculator_config_override import calculator_config_override
 
