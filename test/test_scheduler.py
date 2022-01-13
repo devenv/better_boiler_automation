@@ -138,7 +138,7 @@ class TestScheduler(TestCase):
         return Scheduler(times, self.calculator, boiler_controller)
 
     def _weather_data_with_temps_and_energies(self, temps_and_energies):
-        return [WeatherData(temperature, None, None, None, None, None, None, None, None, energy, None) for temperature, energy in temps_and_energies]
+        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, 0, energy, 0) for temperature, energy in temps_and_energies]
 
 
 class BoilerControllerSpy:

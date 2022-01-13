@@ -89,4 +89,4 @@ class TestCalculator(TestCase):
         self.assertAlmostEqual(Boiler(self.calculator.config).needed_time(5), 1.136, places=2)
 
     def _weather_data_with_temps_and_energies(self, temps_and_energies):
-        return [WeatherData(temperature, None, None, None, None, None, None, None, None, energy, None) for temperature, energy in temps_and_energies]
+        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, 0, energy, 0) for temperature, energy in temps_and_energies]
