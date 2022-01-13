@@ -5,6 +5,10 @@ import json
 import os
 from typing import Generic, TypeVar, List
 
+from metrics.metrics import Metrics
+
+metrics = Metrics()
+
 GLOBAL_STORE = os.environ.get("GLOBAL_STORE") == 'True'
 if GLOBAL_STORE:
     DATA_PATH = f"{os.path.expanduser('~')}/.boiler/data"
@@ -93,6 +97,7 @@ class FreshDataStore(Generic[T], StackDataPersister):
             now = datetime.now(last_record.time.tzinfo)
 
             if last_record.time + self.not_fresh_threshold < now:
+                metrics.incr("store.data_not_fresh")
                 raise DataNotFreshException(f"Data not fresh: {self.id}")
 
             data = list(filter(lambda x: x.time + freshness > now, data))
