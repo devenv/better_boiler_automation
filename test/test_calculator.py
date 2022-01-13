@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.sun import Sun
@@ -12,23 +12,38 @@ from test.calculator_config_override import calculator_config_override
 class TestCalculator(TestCase):
 
     def setUp(self):
-        self.temperature_ds = TemperatureDataStore().clear()
-        self.clouds_ds = CloudsDataStore().clear()
-        self.calculator = Calculator(self.temperature_ds, self.clouds_ds)
+        self.weather_ds = WeatherDataStore().clear()
+        self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
 
     def test_needed_hours_to_heat_no_need(self):
-        self.temperature_ds.add_values([29, 30, 30, 31])
-        self.clouds_ds.add_values([40, 50, 50, 60])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(29, 10), (30, 20), (30, 20), (31, 30)]))
         self.calculator.load()
 
         hours = self.calculator.needed_hours_to_heat(10)
 
         self.assertEqual(hours, 0)
 
+    def test_needed_hours_to_heat_reality_check(self):
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 1)]))
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.729, places=2)
+        self.weather_ds.clear()
+
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 2)]))
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.6, places=2)
+        self.weather_ds.clear()
+        self.weather_ds.clear()
+
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 4)]))
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.35, places=2)
+        self.weather_ds.clear()
+
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 8)]))
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 0.845, places=2)
+        self.weather_ds.clear()
+
     def test_needed_hours_to_heat_full(self):
-        self.temperature_ds.add_values([15])
-        self.clouds_ds.add_values([100])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(15, 0)]))
         self.calculator.load()
 
         hours = self.calculator.needed_hours_to_heat(10)
@@ -36,8 +51,7 @@ class TestCalculator(TestCase):
         self.assertAlmostEqual(hours, 2.12, places=2)
 
     def test_needed_hours_to_heat_full_low_intensity(self):
-        self.temperature_ds.add_values([15])
-        self.clouds_ds.add_values([100])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(15, 0)]))
         self.calculator.load()
 
         hours = self.calculator.needed_hours_to_heat(0)
@@ -45,25 +59,15 @@ class TestCalculator(TestCase):
         self.assertAlmostEqual(hours, 1.325, places=2)
 
     def test_needed_hours_to_heat_some_sun(self):
-        self.temperature_ds.add_values([20])
-        self.clouds_ds.add_values([20])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 2)]))
         self.calculator.load()
 
         hours = self.calculator.needed_hours_to_heat(10)
 
-        self.assertAlmostEqual(hours, 0.40, places=2)
-
-    def test_sun_intensity(self):
-        self.assertEqual(Sun(self.calculator.config).intensity([21]), 0.4)
+        self.assertAlmostEqual(hours, 1.6, places=2)
 
     def test_sun_output(self):
-        self.assertEqual(Sun(self.calculator.config).output([21]), 4.0)
-
-    def test_sun_output_max(self):
-        self.assertEqual(Sun(self.calculator.config).output([50]), 10.0)
-
-    def test_sun_output_min(self):
-        self.assertEqual(Sun(self.calculator.config).output([10]), 0)
+        self.assertAlmostEqual(Sun(calculator_config_override()).output(self._weather_data_with_temps_and_energies([(0, 1)])), 0.277, 2)
 
     def test_needed_temperature(self):
         boiler = Boiler(self.calculator.config)
@@ -81,22 +85,8 @@ class TestCalculator(TestCase):
         self.assertEqual(Boiler(self.calculator.config).needed_time(0.1), 0)
 
     def test_needed_boiler_time_with_nurfer(self):
-        self.calculator.config['boiler_nurfer'] = 0.5
+        self.calculator.config['boiler_nerfer'] = 0.5
         self.assertAlmostEqual(Boiler(self.calculator.config).needed_time(5), 1.136, places=2)
 
-    def test_clouds_part(self):
-        self.temperature_ds.add_values([20])
-        self.clouds_ds.add_values([50])
-        self.calculator.load()
-
-        self.calculator.config['clouds_part'] = 0
-        hours = self.calculator.needed_hours_to_heat(10)
-        self.assertAlmostEqual(hours, 0.34, places=2)
-        
-        self.calculator.config['clouds_part'] = 1
-        hours = self.calculator.needed_hours_to_heat(10)
-        self.assertAlmostEqual(hours, 1.098, places=2)
-
-        self.calculator.config['clouds_part'] = 0.5
-        hours = self.calculator.needed_hours_to_heat(10)
-        self.assertAlmostEqual(hours, 0.719, places=2)
+    def _weather_data_with_temps_and_energies(self, temps_and_energies):
+        return [WeatherData(temperature, None, None, None, None, None, None, None, None, energy, None) for temperature, energy in temps_and_energies]

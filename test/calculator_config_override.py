@@ -11,7 +11,7 @@ def calculator_config_override():
         'desired_max_intensity_temperature': 55,
         'desired_min_intensity_temperature': 40,
         'boiler_min_heating_time_in_minutes': 15,
-        'boiler_nurfer': 1.0,
-        'clouds_part': 0.2,
+        'boiler_nerfer': 1.0,
+        'sun_nerfer': 1.0,
         'hours_ago_to_consider': 6,
     }

@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.scheduler.calculator.boiler import Boiler
 from modules.scheduler.calculator.clouds import Clouds
 from modules.scheduler.calculator.sun import Sun
@@ -17,14 +17,12 @@ class Calculator:
 
     report_metrics: bool = False
 
-    def __init__(self, temperature_ds: TemperatureDataStore, clouds_ds: CloudsDataStore):
-        self.temperature_ds = temperature_ds
-        self.clouds_ds = clouds_ds
+    def __init__(self, weather_ds: WeatherDataStore):
+        self.weather_ds = weather_ds
         self.config = load_dict("calculator_config")
         
     def load(self):
-        self.temperatures = self.temperature_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
-        self.clouds = self.clouds_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
+        self.weather_data = self.weather_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
         return self
 
     def calculate_for_all_intensities(self):
@@ -34,7 +32,7 @@ class Calculator:
         self.report_metrics = False
 
     def needed_hours_to_heat(self, intensity: int) -> float:
-        avg_temp = sum(temperature for temperature in self.temperatures) / len(self.temperatures)
+        avg_temp = sum(data.temperature for data in self.weather_data) / len(self.weather_data)
         self._report_gauge("avg_temp", avg_temp, intensity)
 
         boiler = Boiler(self.config)
@@ -44,12 +42,8 @@ class Calculator:
         needed_energy = boiler.needed_energy(avg_temp, needed_temperature)
         self._report_gauge("needed_energy", needed_energy, intensity)
 
-        sun_output = Sun(self.config).output(self.temperatures)
+        sun_output = Sun(self.config).output(self.weather_data)
         self._report_gauge("sun_output", sun_output)
-        cloudiness = Clouds(self.config).cloudiness(self.clouds)
-        self._report_gauge("clouds_factor", cloudiness)
-        sun_output = sun_output * (1 - self.config['clouds_part'] + (1 - cloudiness) * self.config['clouds_part'])
-        self._report_gauge("sun_output_with_clouds", sun_output)
 
         delta_energy = needed_energy - sun_output
         self._report_gauge("delta_energy", delta_energy, intensity)

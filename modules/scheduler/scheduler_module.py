@@ -1,5 +1,5 @@
 from data_stores.schedule.schedule_data_store import ScheduleDataStore
-from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.calendar_sync.calendar_sync import TIME_ZONE
 from modules.module import Module
 from modules.scheduler.boiler.boiler_controller import BoilerController, DummyBoilerController
@@ -19,7 +19,7 @@ class SchedulerModule(Module):
 
     def run(self):
         super().run()
-        calculator = Calculator(TemperatureDataStore(), CloudsDataStore()).load()
+        calculator = Calculator(WeatherDataStore()).load()
         schedule = ScheduleDataStore().load_schedule()
         schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
         logger.info(f"Got schedule: {schedule}")

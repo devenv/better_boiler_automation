@@ -8,9 +8,9 @@
     "boiler_power_in_amperes": 10,
     "voltage": 220,
     "boiler_min_heating_time_in_minutes": 5,
-    "boiler_nurfer": 1.0,
+    "boiler_nerfer": 1.0,
+    "sun_nerfer": 0.5,
     "desired_max_intensity_temperature": 55,
     "desired_min_intensity_temperature": 30,
-    "clouds_part": 0.2,
     "hours_ago_to_consider": 6
 }

@@ -14,4 +14,4 @@ class Boiler:
         hours_needed = needed_energy / boiler_output
         if hours_needed < int(self.config['boiler_min_heating_time_in_minutes']) / 60:
             return 0
-        return hours_needed * self.config['boiler_nurfer']
+        return hours_needed * self.config['boiler_nerfer']

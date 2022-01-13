@@ -5,10 +5,11 @@ from datetime import datetime
 from freezegun import freeze_time
 
 from data_stores.schedule.schedule_data_store import Time
-from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.calendar_sync.calendar_sync import CalendarSync
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.scheduler import Scheduler
+from modules.weather.weather_data import WeatherData
 
 from test.calculator_config_override import calculator_config_override
 
@@ -16,14 +17,12 @@ from test.calculator_config_override import calculator_config_override
 class TestScheduler(TestCase):
 
     def setUp(self):
-        self.temperature_ds = TemperatureDataStore().clear()
-        self.clouds_ds = CloudsDataStore().clear()
-        self.calculator = Calculator(self.temperature_ds, self.clouds_ds)
+        self.weather_ds = WeatherDataStore().clear()
+        self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
 
     def test_scheduler_simulation_simple(self):
-        self.temperature_ds.add_values([10])
-        self.clouds_ds.add_values([0])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(10, 0, 12)]
 
@@ -32,8 +31,7 @@ class TestScheduler(TestCase):
         self._verify_execution(boiler_controller, (4, 6), (8, 10))
 
     def test_scheduler_simulation_overlap(self):
-        self.temperature_ds.add_values([10])
-        self.clouds_ds.add_values([0])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(7, 0, 10)]
 
@@ -42,8 +40,7 @@ class TestScheduler(TestCase):
         self._verify_execution(boiler_controller, (4, 7))
 
     def test_scheduler_simulation_more_overlap(self):
-        self.temperature_ds.add_values([10])
-        self.clouds_ds.add_values([0])
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(6, 30, 10), Time(7, 0, 10)]
 
@@ -139,6 +136,9 @@ class TestScheduler(TestCase):
         self.calculator.needed_hours_to_heat = MagicMock(return_value=hours_to_heat)
         times = [Time(hour=hour, minute=0, intensity=0) for hour in configured_hours]
         return Scheduler(times, self.calculator, boiler_controller)
+
+    def _weather_data_with_temps_and_energies(self, temps_and_energies):
+        return [WeatherData(temperature, None, None, None, None, None, None, None, None, energy, None) for temperature, energy in temps_and_energies]
 
 
 class BoilerControllerSpy:

@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from freezegun.api import freeze_time
 
 from data_stores.data_persisters import DataNotFreshException, FileDataPersister, StackDataPersister, FreshDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
+from modules.weather.weather_data import WeatherData
 
 
 class TestDataPersisters(TestCase):
@@ -57,3 +59,13 @@ class TestDataPersisters(TestCase):
             fresh_ds.add_value(2)
 
             self.assertEqual(fresh_ds.read_all_values_since(timedelta(hours=1)), [2])
+
+    def test_weather_data_store(self):
+        weather_ds = WeatherDataStore()
+        weather_ds.clear()
+
+        with freeze_time(datetime(2022, 1, 1)):
+            weather_data = WeatherData(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10)
+            weather_ds.add_value(weather_data)
+
+            self.assertEqual(weather_ds.read_all_values_since(timedelta(hours=1)), [weather_data])

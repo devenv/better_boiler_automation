@@ -1,4 +1,4 @@
-from data_stores.weather.weather_data_stores import CloudsDataStore, TemperatureDataStore
+from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.module import Module
 from modules.weather.visual_crossing_provider import WeatherProvider
 
@@ -31,5 +31,4 @@ class WeatherModule(Module):
         metrics.gauge("current_weather.solar_energy", weather.solar_energy)
         metrics.gauge("current_weather.solar_radiation", weather.solar_radiation)
 
-        TemperatureDataStore().add_value(weather.temperature)
-        CloudsDataStore().add_value(weather.clouds)
+        WeatherDataStore().add_value(weather)
