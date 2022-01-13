@@ -30,7 +30,7 @@ class WeatherProvider:
             feels_like=weather.temperature('celsius')['feels_like'],
             visibility=weather.visibility_distance,
             humidity=weather.humidity,
-            prcipitation=weather.precipitation_probability or 0,
+            precipitation=weather.precipitation_probability or 0,
             pressure=weather.pressure['press'],
             wind_speed=weather.wind()['speed'],
             wind_direction=weather.wind()['deg'],

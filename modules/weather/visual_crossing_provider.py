@@ -26,7 +26,7 @@ class WeatherProvider:
             feels_like=weather['feelslike'],
             visibility=weather['visibility'],
             humidity=weather['humidity'],
-            prcipitation=weather['precip'],
+            precipitation=weather['precip'] or 0,
             pressure=weather['pressure'],
             wind_speed=weather['windspeed'],
             wind_direction=weather['winddir'],

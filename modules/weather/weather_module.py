@@ -24,7 +24,7 @@ class WeatherModule(Module):
         metrics.gauge("current_weather.feels_like", weather.feels_like)
         metrics.gauge("current_weather.visibility", weather.visibility)
         metrics.gauge("current_weather.humidity", weather.humidity)
-        metrics.gauge("current_weather.prcipitation", weather.prcipitation)
+        metrics.gauge("current_weather.precipitation", weather.precipitation)
         metrics.gauge("current_weather.pressure", weather.pressure)
         metrics.gauge("current_weather.wind_speed", weather.wind_speed)
         metrics.gauge("current_weather.wind_direction", weather.wind_direction)

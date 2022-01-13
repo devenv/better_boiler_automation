@@ -8,7 +8,7 @@ class WeatherData:
     feels_like: float
     visibility: int
     humidity: int
-    prcipitation: int
+    precipitation: int
     pressure: float
     wind_speed: int
     wind_direction: int
