@@ -22,7 +22,7 @@ class TestScheduler(TestCase):
         self.calculator.config = calculator_config_override()
 
     def test_scheduler_simulation_simple(self):
-        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(10, 0, 12)]
 
@@ -31,7 +31,7 @@ class TestScheduler(TestCase):
         self._verify_execution(boiler_controller, (4, 6), (8, 10))
 
     def test_scheduler_simulation_overlap(self):
-        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(7, 0, 10)]
 
@@ -40,7 +40,7 @@ class TestScheduler(TestCase):
         self._verify_execution(boiler_controller, (4, 7))
 
     def test_scheduler_simulation_more_overlap(self):
-        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 1)]))
+        self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
         self.calculator.load()
         times = [Time(6, 0, 10), Time(6, 30, 10), Time(7, 0, 10)]
 
@@ -138,7 +138,7 @@ class TestScheduler(TestCase):
         return Scheduler(times, self.calculator, boiler_controller)
 
     def _weather_data_with_temps_and_energies(self, temps_and_energies):
-        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, 0, energy, 0) for temperature, energy in temps_and_energies]
+        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, 0, energy / 3600, 0) for temperature, energy in temps_and_energies]
 
 
 class BoilerControllerSpy:

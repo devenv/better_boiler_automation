@@ -13,5 +13,5 @@ def calculator_config_override():
         'boiler_min_heating_time_in_minutes': 15,
         'boiler_nerfer': 1.0,
         'sun_nerfer': 1.0,
-        'hours_ago_to_consider': 6,
+        'hours_ago_to_consider': 4,
     }
