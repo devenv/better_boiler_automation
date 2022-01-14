@@ -18,7 +18,7 @@ class WeatherModule(Module):
         super().run()
         weather = WeatherProvider().get_weather_data()
 
-        logger.info(f"Temperature: {weather.temperature}")
+        logger.info(f"T: {weather.temperature:.2f}, FL: {weather.feels_like:.2f}, SE: {weather.solar_energy:.2f}")
         metrics.gauge("current_weather.temperature", weather.temperature)
         metrics.gauge("current_weather.clouds", weather.clouds)
         metrics.gauge("current_weather.feels_like", weather.feels_like)
