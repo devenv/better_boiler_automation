@@ -1,7 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import requests
 
+from modules.calendar_sync.calendar_sync import TIME_ZONE
 from modules.weather.weather_data import WeatherData
 
 from utils.secrets import load_string
@@ -22,7 +23,7 @@ class WeatherProvider:
         
     def _visualcrossing_to_weather_data(self, weather: dict) -> WeatherData:
         current_data = weather['currentConditions']
-        now = datetime.now()
+        now = datetime.now() + timedelta(hours=TIME_ZONE)
         date_now = now.strftime("%Y-%m-%d")
         hour_now = now.strftime("%H:00:00")
         today_data = [day for day in weather['days'] if day['datetime'] == date_now][0]
