@@ -28,20 +28,20 @@ class TestCalculator(TestCase):
 
     def test_needed_hours_to_heat_reality_check(self):
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 0.25)]))
-        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.729, places=2)
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.6 , places=2)
         self.weather_ds.clear()
 
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 0.5)]))
-        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.6, places=2)
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.35, places=2)
         self.weather_ds.clear()
         self.weather_ds.clear()
 
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 1)]))
-        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 1.35, places=2)
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 0.845, places=2)
         self.weather_ds.clear()
 
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(20, 2)]))
-        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 0.845, places=2)
+        self.assertAlmostEqual(self.calculator.load().needed_hours_to_heat(10), 0, places=2)
         self.weather_ds.clear()
 
     def test_needed_hours_to_heat_full(self):
@@ -66,10 +66,10 @@ class TestCalculator(TestCase):
 
         hours = self.calculator.needed_hours_to_heat(10)
 
-        self.assertAlmostEqual(hours, 1.6, places=2)
+        self.assertAlmostEqual(hours, 1.35, places=2)
 
     def test_sun_output(self):
-        self.assertAlmostEqual(Sun(calculator_config_override()).output(self._weather_data_with_temps_and_energies([(0, 0.25)])), 0.277, 2)
+        self.assertAlmostEqual(Sun(calculator_config_override()).output(self._weather_data_with_temps_and_energies([(0, 0.25)])), 0.555, 2)
 
     def test_needed_temperature(self):
         boiler = Boiler(self.calculator.config)
