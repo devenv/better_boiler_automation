@@ -24,7 +24,6 @@ class Scheduler:
         self.calculator = calculator
         self.boiler_controller = boiler_controller
         self.times = times
-        metrics.gauge("scheduler.schedules_loaded", len(times))
         if not times:
             raise NoScheduleException()
 
@@ -37,11 +36,8 @@ class Scheduler:
 
         time = self._get_next_schedule()
         metrics.gauge("scheduler.next_schedule", time.plus_hours(TIME_ZONE).hour + time.minute / 60)
-        metrics.gauge("scheduler.next_intensity", time.intensity)
-        metrics.gauge("scheduler.next_temperature", Boiler(self.calculator.config).needed_temperature(time.intensity))
 
         hours_to_heat = self.calculator.needed_hours_to_heat(time.intensity)
-        metrics.incr("scheduler.next_hours_needed", amount=hours_to_heat)
 
         eta_on = 0 if is_on else (self._find_next_hour(time) - timedelta(hours=hours_to_heat) - now).seconds / 60 / 60
         eta_off = (self._find_next_hour(time) - now).seconds / 60 / 60
@@ -51,7 +47,7 @@ class Scheduler:
         if now + timedelta(hours=hours_to_heat) >= self._find_next_hour(time):
             if not is_on:
                 logger.info(f"Switching on for hour {time.plus_hours(TIME_ZONE).hour}:{time.minute} to heat {hours_to_heat:.2f}")
-                metrics.incr("scheduler.hours_heating", amount=hours_to_heat, tags={'intensity': time.intensity})
+                metrics.incr("scheduler.hours_heating", amount=hours_to_heat)
                 self.boiler_controller.turn_on()
         elif is_on:
             self.boiler_controller.turn_off()

@@ -17,9 +17,12 @@ class Calculator:
 
     report_metrics: bool = False
 
-    def __init__(self, weather_ds: WeatherDataStore):
+    def __init__(self, weather_ds: WeatherDataStore, report_next_metrics: bool = False):
         self.weather_ds = weather_ds
+        self.report_nex_metrics = report_next_metrics
         self.config = load_dict("calculator_config")
+        self.boiler = Boiler(self.config)
+        self.sun = Sun(self.config)
         
     def load(self):
         self.weather_data = self.weather_ds.read_all_values_since(timedelta(hours=self.config['hours_ago_to_consider']))
@@ -32,17 +35,18 @@ class Calculator:
         self.report_metrics = False
 
     def needed_hours_to_heat(self, intensity: int) -> float:
+        self._report_gauge("intencity", intensity)
+            
         avg_temp = sum(data.temperature for data in self.weather_data) / len(self.weather_data)
         self._report_gauge("avg_temp", avg_temp, intensity)
 
-        boiler = Boiler(self.config)
-        needed_temperature = boiler.needed_temperature(intensity)
+        needed_temperature = self.boiler.needed_temperature(intensity)
         self._report_gauge("needed_temperature", needed_temperature, intensity)
 
-        needed_energy = boiler.needed_energy(avg_temp, needed_temperature)
+        needed_energy = self.boiler.needed_energy(avg_temp, needed_temperature)
         self._report_gauge("needed_energy", needed_energy, intensity)
 
-        sun_output = Sun(self.config).output(self.weather_data)
+        sun_output = self.sun.output(self.weather_data)
         self._report_gauge("sun_output", sun_output)
 
         delta_energy = needed_energy - sun_output
@@ -51,7 +55,7 @@ class Calculator:
         if delta_energy <= 0:
             return 0
 
-        hours_needed = boiler.needed_time(delta_energy)
+        hours_needed = self.boiler.needed_time(delta_energy)
         self._report_gauge("hours_needed", hours_needed, intensity)
 
         return hours_needed
@@ -62,3 +66,5 @@ class Calculator:
                 metrics.gauge(f"calculator.{name}", value)
             else:
                 metrics.gauge(f"calculator.{name}", value, tags={'intensity': intensity})
+        if self.report_nex_metrics:
+            metrics.gauge(f"calculator.next_{name}", value)

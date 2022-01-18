@@ -15,6 +15,8 @@ class TestCalculator(TestCase):
         self.weather_ds = WeatherDataStore().clear()
         self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
+        self.calculator.sun.config = calculator_config_override()
+        self.calculator.boiler.config = calculator_config_override()
 
     def test_needed_hours_to_heat_no_need(self):
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(29, 10), (30, 20), (30, 20), (31, 30)]))

@@ -19,7 +19,7 @@ class SchedulerModule(Module):
 
     def run(self):
         super().run()
-        calculator = Calculator(WeatherDataStore()).load()
+        calculator = Calculator(WeatherDataStore(), report_next_metrics=True).load()
         schedule = ScheduleDataStore().load_schedule()
         schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
         logger.info(f"Got schedule: {schedule}")
