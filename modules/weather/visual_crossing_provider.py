@@ -28,6 +28,8 @@ class WeatherProvider:
         hour_now = now.strftime("%H:00:00")
         today_data = [day for day in weather['days'] if day['datetime'] == date_now][0]
         last_hour_data = [hour for hour in today_data['hours'] if hour['datetime'] == hour_now][0]
+        solar_energy = last_hour_data['solarenergy'] or 0
+        solar_energy = solar_energy / 3.6  # kWh
 
         return WeatherData(
             temperature=current_data['temp'],
