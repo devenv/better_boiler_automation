@@ -65,7 +65,7 @@ class TestDataPersisters(TestCase):
         weather_ds.clear()
 
         with freeze_time(datetime(2022, 1, 1)):
-            weather_data = WeatherData(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10)
+            weather_data = WeatherData(10, 10, 10, 10, 10, 10, 10, 10, 10, 10)
             weather_ds.add_value(weather_data)
 
             self.assertEqual(weather_ds.read_all_values_since(timedelta(hours=1)), [weather_data])
