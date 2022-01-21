@@ -38,7 +38,6 @@ class WeatherProvider:
             precipitation=current_data['precip'] or 0,
             pressure=current_data['pressure'],
             wind_speed=current_data['windspeed'],
-            wind_direction=current_data['winddir'],
             solar_energy=last_hour_data['solarenergy'] or 0,
             solar_radiation=last_hour_data['solarradiation'] or 0,
         )

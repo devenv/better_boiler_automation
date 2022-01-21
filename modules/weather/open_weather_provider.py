@@ -33,7 +33,6 @@ class WeatherProvider:
             precipitation=weather.precipitation_probability or 0,
             pressure=weather.pressure['press'],
             wind_speed=weather.wind()['speed'],
-            wind_direction=weather.wind()['deg'],
             solar_energy=0,
             solar_radiation=0,
         )

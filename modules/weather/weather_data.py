@@ -13,6 +13,5 @@ class WeatherData:
     precipitation: int
     pressure: float
     wind_speed: int
-    wind_direction: int
     solar_energy: float
     solar_radiation: float
