@@ -37,6 +37,7 @@ class Scheduler:
         time = self._get_next_schedule()
         metrics.gauge("scheduler.next_schedule", time.plus_hours(TIME_ZONE).hour + time.minute / 60)
 
+        metrics.gauge("scheduler.intensity", time.intensity)
         hours_to_heat = self.calculator.needed_hours_to_heat(time.intensity)
         metrics.incr(f"scheduler.next_hours_needed", hours_to_heat)
 

@@ -34,8 +34,6 @@ class Calculator:
         self.report_metrics = False
 
     def needed_hours_to_heat(self, intensity: int) -> float:
-        self._report_gauge("intencity", intensity)
-            
         avg_temp = sum(data.temperature for data in self.weather_data) / len(self.weather_data)
         self._report_gauge("avg_temp", avg_temp, intensity)
 
