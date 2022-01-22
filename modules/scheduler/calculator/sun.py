@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from modules.weather.weather_data import WeatherData
@@ -10,12 +9,13 @@ class Sun:
         self.config = config
 
     def output(self, weather_data: List[WeatherData]) -> float:
-        now = datetime.now()
-        current_hour = now.hour
-        sunrise_hour = weather_data[0].sunrise_hour
-        sunset_hour = weather_data[0].sunset_hour
-        if current_hour < sunrise_hour or current_hour > sunset_hour:
+        return sum(self._energy_at_hour(data) for data in weather_data) / len(weather_data) * self.config['hours_ago_to_consider'] * self.config['sun_nerfer']
+
+    def _energy_at_hour(self, weather_data: WeatherData):
+        sunrise_hour = weather_data.sunrise_hour
+        sunset_hour = weather_data.sunset_hour
+        if weather_data.hour < sunrise_hour or weather_data.hour > sunset_hour:
             return 0
-        sunrise_hour_time = datetime(now.year, now.month, now.day, sunrise_hour, 0, 0)
-        sun_angle_ratio = (now.timestamp() - sunrise_hour_time.timestamp()) / 60 / 60 / (sunset_hour - sunrise_hour)
-        return sun_angle_ratio * sum(data.solar_energy for data in weather_data) / len(weather_data) * self.config['hours_ago_to_consider'] * self.config['sun_receiving_area_in_sq_meters'] * self.config['sun_nerfer']
+        mid = (sunset_hour - sunrise_hour) / 2
+        sun_angle_ratio = 1 - abs(weather_data.hour - (mid + sunrise_hour)) / mid
+        return weather_data.solar_energy * sun_angle_ratio * self.config['sun_receiving_area_in_sq_meters']

@@ -5,6 +5,7 @@ from dataclasses_json import dataclass_json
 @dataclass_json
 @dataclass
 class WeatherData:
+    hour: int
     temperature: float
     clouds: int
     feels_like: float

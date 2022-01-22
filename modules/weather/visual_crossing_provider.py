@@ -34,6 +34,7 @@ class WeatherProvider:
         solar_energy = solar_energy / 3.6  # kWh
 
         return WeatherData(
+            hour=now.hour,
             temperature=current_data['temp'],
             clouds=current_data['cloudcover'],
             feels_like=current_data['feelslike'],
