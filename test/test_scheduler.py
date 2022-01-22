@@ -20,6 +20,8 @@ class TestScheduler(TestCase):
         self.weather_ds = WeatherDataStore().clear()
         self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
+        self.calculator.boiler.config = calculator_config_override()
+        self.calculator.sun.config = calculator_config_override()
 
     def test_scheduler_simulation_simple(self):
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
@@ -28,7 +30,7 @@ class TestScheduler(TestCase):
 
         boiler_controller = self._run_simulation(times)
 
-        self._verify_execution(boiler_controller, (5, 6), (8, 10))
+        self._verify_execution(boiler_controller, (4, 6), (8, 10))
 
     def test_scheduler_simulation_overlap(self):
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
@@ -37,7 +39,7 @@ class TestScheduler(TestCase):
 
         boiler_controller = self._run_simulation(times)
 
-        self._verify_execution(boiler_controller, (5, 7))
+        self._verify_execution(boiler_controller, (4, 7))
 
     def test_scheduler_simulation_more_overlap(self):
         self.weather_ds.add_values(self._weather_data_with_temps_and_energies([(10, 0.25)]))
@@ -46,7 +48,7 @@ class TestScheduler(TestCase):
 
         boiler_controller = self._run_simulation(times)
 
-        self._verify_execution(boiler_controller, (5, 7))
+        self._verify_execution(boiler_controller, (4, 7))
 
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_scheduler_should_turn_on(self):
