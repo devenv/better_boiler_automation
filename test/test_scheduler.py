@@ -48,9 +48,6 @@ class TestScheduler(TestCase):
 
         self._verify_execution(boiler_controller, (5, 7))
 
-    def _datetime_for_hour(self, hour):
-        return datetime(2021, 1, 1, hour, 0, 0)
-
     @freeze_time(datetime(2021, 1, 1, 5, 0, 0))
     def test_scheduler_should_turn_on(self):
         boiler_controller = BoilerControllerSpy(is_on=False)
@@ -131,6 +128,9 @@ class TestScheduler(TestCase):
         self.assertEqual(boiler_controller.turned_off, len(executions))
         self.assertEqual(boiler_controller.turned_on_times, [self._datetime_for_hour(n[0]) for n in executions])
         self.assertEqual(boiler_controller.turned_off_times, [self._datetime_for_hour(n[1]) for n in executions])
+
+    def _datetime_for_hour(self, hour):
+        return datetime(2021, 1, 1, hour, 0, 0)
         
     def _get_scheduler(self, hours_to_heat, boiler_controller, configured_hours):
         self.calculator.needed_hours_to_heat = MagicMock(return_value=hours_to_heat)
@@ -138,7 +138,7 @@ class TestScheduler(TestCase):
         return Scheduler(times, self.calculator, boiler_controller)
 
     def _weather_data_with_temps_and_energies(self, temps_and_energies):
-        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, energy / 3600, 0, 6, 18) for temperature, energy in temps_and_energies]
+        return [WeatherData(temperature, 0, 0, 0, 0, 0, 0, 0, energy / 3600, 0, 10, 14) for temperature, energy in temps_and_energies]
 
 
 class BoilerControllerSpy:
