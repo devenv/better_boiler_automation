@@ -8,8 +8,8 @@ from modules.scheduler.boiler.boiler_controller import BoilerController, DummyBo
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.scheduler import Scheduler
 
-from utils.secrets import load_dict
 from utils.logger import get_logger
+from utils.secrets import load_dict
 
 logger = get_logger()
 
