@@ -7,6 +7,8 @@ from data_stores.data_persisters import DataNotFreshException, FileDataPersister
 from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.weather.weather_data import WeatherData
 
+FRESHNESS = 5
+
 
 class TestDataPersisters(TestCase):
 
@@ -61,7 +63,7 @@ class TestDataPersisters(TestCase):
             self.assertEqual(fresh_ds.read_all_values_since(timedelta(hours=1)), [2])
 
     def test_weather_data_store(self):
-        weather_ds = WeatherDataStore()
+        weather_ds = WeatherDataStore(freshness=timedelta(hours=FRESHNESS))
         weather_ds.clear()
 
         with freeze_time(datetime(2022, 1, 1)):

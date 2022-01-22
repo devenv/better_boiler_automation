@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from data_stores.schedule.schedule_data_store import ScheduleDataStore
 from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.calendar_sync.calendar_sync import TIME_ZONE
@@ -6,6 +8,7 @@ from modules.scheduler.boiler.boiler_controller import BoilerController, DummyBo
 from modules.scheduler.calculator.calculator import Calculator
 from modules.scheduler.scheduler import Scheduler
 
+from utils.secrets import load_dict
 from utils.logger import get_logger
 
 logger = get_logger()
@@ -19,7 +22,10 @@ class SchedulerModule(Module):
 
     def run(self):
         super().run()
-        calculator = Calculator(WeatherDataStore(), report_next_metrics=True).load()
+
+        config = load_dict("calculator_config")
+    
+        calculator = Calculator(WeatherDataStore(freshness=timedelta(hours=config['hours_ago_to_consider'])), report_next_metrics=True).load()
         schedule = ScheduleDataStore().load_schedule()
         schedule = [time.plus_hours(0 - TIME_ZONE) for time in schedule]
         logger.info(f"Got schedule: {schedule}")

@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.scheduler.calculator.boiler import Boiler
-from modules.scheduler.calculator.clouds import Clouds
 from modules.scheduler.calculator.sun import Sun
 
 from metrics.metrics import Metrics

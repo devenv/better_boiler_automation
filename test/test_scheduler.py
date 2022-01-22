@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from freezegun import freeze_time
 
 from data_stores.schedule.schedule_data_store import Time
@@ -17,7 +17,7 @@ from test.calculator_config_override import calculator_config_override
 class TestScheduler(TestCase):
 
     def setUp(self):
-        self.weather_ds = WeatherDataStore().clear()
+        self.weather_ds = WeatherDataStore(freshness=timedelta(hours=5)).clear()
         self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
         self.calculator.boiler.config = calculator_config_override()

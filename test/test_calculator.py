@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from datetime import datetime
-from freezegun import freeze_time
+from datetime import timedelta
 
 from data_stores.weather.weather_data_stores import WeatherDataStore
 from modules.scheduler.calculator.calculator import Calculator
@@ -15,7 +14,7 @@ from test.calculator_config_override import calculator_config_override
 class TestCalculator(TestCase):
 
     def setUp(self):
-        self.weather_ds = WeatherDataStore().clear()
+        self.weather_ds = WeatherDataStore(freshness=timedelta(hours=5)).clear()
         self.calculator = Calculator(self.weather_ds)
         self.calculator.config = calculator_config_override()
         self.calculator.sun.config = calculator_config_override()
