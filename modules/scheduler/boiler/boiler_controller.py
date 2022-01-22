@@ -24,16 +24,16 @@ class BoilerController:
 
     def turn_on(self) -> None:
         self.switcher.turn_on()
-        self._broadcast('Turning boiler on')
         metrics.incr('boiler.state.on')
+        self._broadcast('Turning boiler on')
 
     def turn_off(self) -> None:
         self.switcher.turn_off()
-        self._broadcast('Turning boiler off')
         metrics.incr('boiler.state.off')
+        self._broadcast('Turning boiler off')
 
     def _broadcast(self, message: str) -> None:
-        self.assistant.ask(f'broadcast "{message}"')
+        self.assistant.ask(f'broadcast to living room "{message}"')
         logger.info(message)
 
 
