@@ -5,7 +5,7 @@ from data_stores.data_persisters import FreshDataStore
 from modules.weather.weather_data import WeatherData
 
 
-FRESHNESS = timedelta(hours=5)
+FRESHNESS = timedelta(hours=12)
 MAX_SIZE = 100
 
 
