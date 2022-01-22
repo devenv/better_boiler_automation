@@ -25,7 +25,7 @@ class WeatherProvider:
         current_data = weather['currentConditions']
         sunrise_hour = int(current_data['sunrise'].split(':')[0])
         sunset_hour = int(current_data['sunset'].split(':')[0])
-        now = datetime.now() + timedelta(hours=TIME_ZONE)
+        now = datetime.utcnow() + timedelta(hours=TIME_ZONE * 2)  # looks like a bug in visualcrossing, all hours are shifted by another TZ, solar energy doesn't fit the sunset/sunrise otherwise
         date_now = now.strftime("%Y-%m-%d")
         hour_now = now.strftime("%H:00:00")
         today_data = [day for day in weather['days'] if day['datetime'] == date_now][0]

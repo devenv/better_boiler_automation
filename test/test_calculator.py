@@ -111,5 +111,11 @@ class TestCalculator(TestCase):
         weather_data[0].sunset_hour = 14
         self.assertEqual(Sun(calculator_config_override()).output(weather_data), 0)
 
+    def test_sun_angle_not_negative(self):
+        weather_data = self._weather_data_with_temps_and_energies([(0, 0.07)], 10)
+        weather_data[0].sunrise_hour = 14
+        weather_data[0].sunset_hour = 18
+        self.assertEqual(Sun(calculator_config_override()).output(weather_data), 0)
+
     def _weather_data_with_temps_and_energies(self, temps_and_energies, hour=12):
         return [WeatherData(hour, temperature, 0, 0, 0, 0, 0, 0, 0, energy, 0, 6, 18) for temperature, energy in temps_and_energies]
