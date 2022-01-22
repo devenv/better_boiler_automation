@@ -47,7 +47,6 @@ class Calculator:
         self._report_gauge("needed_energy", needed_energy, intensity)
 
         sun_output = self.sun.output(self.weather_data)
-        logger.info(f"sun output: {sun_output}")
         self._report_gauge("sun_output", sun_output)
 
         delta_energy = needed_energy - sun_output
