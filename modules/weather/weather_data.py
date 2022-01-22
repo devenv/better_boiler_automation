@@ -15,3 +15,5 @@ class WeatherData:
     wind_speed: int
     solar_energy: float
     solar_radiation: float
+    sunrise_hour: int
+    sunset_hour: int

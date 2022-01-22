@@ -23,6 +23,8 @@ class WeatherProvider:
         
     def _visualcrossing_to_weather_data(self, weather: dict) -> WeatherData:
         current_data = weather['currentConditions']
+        sunrise_hour = int(current_data['sunrise'].split(':')[0])
+        sunset_hour = int(current_data['sunset'].split(':')[0])
         now = datetime.now() + timedelta(hours=TIME_ZONE)
         date_now = now.strftime("%Y-%m-%d")
         hour_now = now.strftime("%H:00:00")
@@ -42,4 +44,6 @@ class WeatherProvider:
             wind_speed=current_data['windspeed'],
             solar_energy=last_hour_data['solarenergy'] or 0,
             solar_radiation=last_hour_data['solarradiation'] or 0,
+            sunrise_hour=sunrise_hour,
+            sunset_hour=sunset_hour,
         )
