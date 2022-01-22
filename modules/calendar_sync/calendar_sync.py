@@ -76,7 +76,7 @@ class CalendarSync:
         for event in events:
             start = datetime.fromisoformat(event['start'].get('dateTime', event['start'].get('date')))
             summary = event['summary']
-            if "Boiler intensity:" in summary:
+            if "boiler intensity:" in summary.lower():
                 intensity = summary.split('intensity:')[1]
                 schedule.append(Time(start.hour, start.minute, int(intensity)))
         return schedule
