@@ -11,7 +11,10 @@ metrics = Metrics()
 class BoilerController:
 
     def __init__(self):
-        self.assistant = Assistant()
+        try:
+            self.assistant = Assistant()
+        except Exception:
+            pass
         self.switcher = Switcher()
 
     def is_on(self) -> bool:
@@ -33,7 +36,10 @@ class BoilerController:
         self._broadcast('Turning boiler off')
 
     def _broadcast(self, message: str) -> None:
-        self.assistant.ask(f'broadcast to living room "{message}"')
+        try:
+            self.assistant.ask(f'broadcast to living room "{message}"')
+        except Exception:
+            pass
         logger.info(message)
 
 
