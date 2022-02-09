@@ -1,4 +1,4 @@
-from connectors.assistant.assistant import Assistant
+from connectors.ifttt.ifttt import Ifttt
 from connectors.switcher.switcher import Switcher
 
 from metrics.metrics import Metrics
@@ -12,7 +12,7 @@ class BoilerController:
 
     def __init__(self):
         try:
-            self.assistant = Assistant()
+            self.ifttt = Ifttt()
         except Exception:
             pass
         self.switcher = Switcher()
@@ -28,19 +28,19 @@ class BoilerController:
     def turn_on(self) -> None:
         self.switcher.turn_on()
         metrics.incr('boiler.state.on')
-        self._broadcast('Turning boiler on')
+        self._broadcast('on')
 
     def turn_off(self) -> None:
         self.switcher.turn_off()
         metrics.incr('boiler.state.off')
-        self._broadcast('Turning boiler off')
+        self._broadcast('off')
 
-    def _broadcast(self, message: str) -> None:
+    def _broadcast(self, status: str) -> None:
         try:
-            self.assistant.ask(f'broadcast to living room "{message}"')
+            self.ifttt.send_json({'status': status})
         except Exception:
             pass
-        logger.info(message)
+        logger.info(f'boiler status turned {status}')
 
 
 class DummyBoilerController:

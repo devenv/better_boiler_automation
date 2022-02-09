@@ -50,6 +50,17 @@
             "env": {
                 "PYTHONPATH": "${cwd}"
             }
+        },
+        {
+            "name": "Ifttt test",
+            "type": "python",
+            "request": "launch",
+            "program": "ifttt_test.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ]
 }

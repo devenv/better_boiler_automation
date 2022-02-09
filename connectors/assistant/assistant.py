@@ -16,7 +16,7 @@ ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
 
-class Assistant(object):
+class Assistant:
 
     def __init__(self):
         self.config = load_dict("device_config")
