@@ -29,6 +29,7 @@
   mkdir boiler_clone/secrets -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ boiler_clone/secrets/ >/dev/null 2>&1
   mkdir ~/.boiler/secrets -p
+  mkdir ~/.boiler/data -p
   rsync -avP --exclude=.git better_boiler_automation_configs/secrets/ ~/.boiler/secrets/ >/dev/null 2>&1
 
   if [ "$new_last_commit" = "$old_last_commit" ]; then
