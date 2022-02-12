@@ -40,11 +40,11 @@
 
   cd boiler_clone
 
-  #pip3.9 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
+  #pip install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
  
   if ! cmp requirements.txt ../boiler_ready/requirements.txt >/dev/null 2>&1; then
     echo "Installing requirements"
-    pip3.9 install -r requirements.txt
+    pip install -r requirements.txt
     if [ $? -eq 0 ]; then
       echo 'Requirements installed'
     else
@@ -56,7 +56,7 @@
   fi
 
   echo "Running tests"
-  python3.9 -m unittest
+  python -m unittest
   if [ $? -eq 0 ]; then
     echo 'Tests passed'
   else
