@@ -5,7 +5,7 @@ Some code changes would be probably needed to make it work for your ecosystem.
 
 * See blog post:
 * Install Grafana agent, use the config `configs/grafana-agent.yaml` (update it with your credentials)
-* Install Python3.7
+* Install Python3.9
 * Create the venv `python -m venv venv` in `~/`
 * Copy `scripts/*` to `~/`
 * Update `pre_deploy.sh` with secrets private repo (repo with `/secrets` directory, see `/secrets_templates`)

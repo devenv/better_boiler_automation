@@ -2,7 +2,7 @@
 
 {
 
-  export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
+  export PYTHONPATH=/home/pi/venv/lib/python3.9/site-packages:.
   export DD_TRACE_ENABLED=False
 
   . venv/bin/activate
@@ -36,11 +36,11 @@
 
   cd boiler_clone
 
-  #pip3.7 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
+  #pip3.9 install https://www.piwheels.org/simple/grpcio/grpcio-1.38.1-cp37-cp37m-linux_armv6l.whl
  
   if ! cmp requirements.txt ../boiler_ready/requirements.txt >/dev/null 2>&1; then
     echo "Installing requirements"
-    pip3.7 install -r requirements.txt
+    pip3.9 install -r requirements.txt
     if [ $? -eq 0 ]; then
       echo 'Requirements installed'
     else
@@ -52,7 +52,7 @@
   fi
 
   echo "Running tests"
-  python3.7 -m unittest
+  python3.9 -m unittest
   if [ $? -eq 0 ]; then
     echo 'Tests passed'
   else

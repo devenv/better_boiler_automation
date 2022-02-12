@@ -4,7 +4,7 @@
 
 cd boiler_ready
 
-export PYTHONPATH=/home/pi/venv/lib/python3.7/site-packages:.
+export PYTHONPATH=/home/pi/venv/lib/python3.9/site-packages:.
 
 old_cron=$(crontab -l)
 schedule=$(python -m runners.generate_cron)
