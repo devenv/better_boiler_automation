@@ -12,8 +12,11 @@
 
   cd boiler_clone
   new_last_commit=$(git log --format="%H" -n 1)
-  cd ../boiler_ready
-  old_last_commit=$(git log --format="%H" -n 1)
+  old_last_commit=""
+  if [ -d "../boiler_ready" ]; then
+    cd ../boiler_ready
+    old_last_commit=$(git log --format="%H" -n 1)
+  fi
   cd ..
 
   rm -rf better_boiler_automation_configs
