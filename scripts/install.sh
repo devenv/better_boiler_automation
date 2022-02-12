@@ -15,6 +15,9 @@ LOKI_PASSWORD=$6
 
 cd
 
+echo "-- disabling crontab --"
+crontab -r
+
 echo "-- creating venv --"
 rm -rf venv
 python3 -m venv venv
