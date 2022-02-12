@@ -2,13 +2,13 @@
 
 set -e
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage: sh install.sh PROMETHEUS_USERNAME PROMETHEUS_PASSWORD LOKI_USERNAME LOKI_PASSWORD"
-    exit 1
+if [ "$#" -ne 4 ]; then
+      echo "Usage: sh install.sh PROMETHEUS_USERNAME PROMETHEUS_PASSWORD LOKI_USERNAME LOKI_PASSWORD"
+      exit 1
 fi
 PROMETHEUS_USERNAME=$1
 PROMETHEUS_PASSWORD=$2
-LOKI_PASSWORD=$3
+LOKI_USERNAME=$3
 LOKI_PASSWORD=$4
 
 cd
@@ -32,10 +32,10 @@ sh replace_crontab.sh
 
 echo "-- installing grafana --"
 sudo cp boiler_clone/configs/grafana-agent.yaml /etc/
-sudo sed -i /etc/grafana-agent.yaml "s/PROMETHEUS_USERNAME/$PROMETHEUS_USERNAME/g"
-sudo sed -i /etc/grafana-agent.yaml "s/PROMETHEUS_PASSWORD/$PROMETHEUS_PASSWORD/g"
-sudo sed -i /etc/grafana-agent.yaml "s/LOKI_USERNAME/$LOKI_USERNAME/g"
-sudo sed -i /etc/grafana-agent.yaml "s/LOKI_PASSWORD/$LOKI_PASSWORD/g"
+sudo sed -i "s/PROMETHEUS_USERNAME/$PROMETHEUS_USERNAME/g" /etc/grafana-agent.yaml
+sudo sed -i "s/PROMETHEUS_PASSWORD/$PROMETHEUS_PASSWORD/g" /etc/grafana-agent.yaml
+sudo sed -i "s/LOKI_USERNAME/$LOKI_USERNAME/g" /etc/grafana-agent.yaml
+sudo sed -i "s/LOKI_PASSWORD/$LOKI_PASSWORD/g" /etc/grafana-agent.yaml
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 sudo apt-get update
