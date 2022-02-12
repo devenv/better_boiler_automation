@@ -3,15 +3,6 @@
 Some code changes would be probably needed to make it work for your ecosystem.
 
 
-* See blog post:
-* Install Grafana agent, use the config `configs/grafana-agent.yaml` (update it with your credentials)
-* Install Python3.9
-* Create the venv `python -m venv venv` in `~/`
-* Copy `scripts/*` to `~/`
-* Update `pre_deploy.sh` with secrets private repo (repo with `/secrets` directory, see `/secrets_templates`)
-* Run `sh pre_deploy.sh`
-* Run all modules manually and follow the authentication prompts:
-  * `sh run_module.sh weather`
-  * `sh run_module.sh calendar_sync`
-  * `sh run_module.sh scheduler`
-* Run `sh replace_crontab.sh`
+* See blog post: https://medium.com/fundbox-engineering/weather-driven-boiler-automation-done-right-d62ba2dbbd4e
+* Install Raspberry PI light (the one with python3.9)
+* `cd; cp better_boiler_automation/scripts/install.sh install.sh; sh install.sh`
